@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS pessoa (
 CREATE TABLE IF NOT EXISTS funcionario (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cargo VARCHAR(50),
-    password VARCHAR(256),
+    password VARCHAR(255),
     salario FLOAT,
     habilitado BOOLEAN,
     created_at TIMESTAMP,
