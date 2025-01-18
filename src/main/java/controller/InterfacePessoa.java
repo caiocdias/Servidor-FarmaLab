@@ -13,4 +13,5 @@ import model.Pessoa;
  */
 public interface InterfacePessoa extends Remote {
     public void inserirPessoa(Pessoa p) throws RemoteException;
+    public Pessoa getPessoa(Pessoa p) throws RemoteException;
 }

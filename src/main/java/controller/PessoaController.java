@@ -36,5 +36,12 @@ public class PessoaController extends UnicastRemoteObject implements InterfacePe
         Conexao.desconectar();
         
     }
+
+    @Override
+    public Pessoa getPessoa(Pessoa p) throws RemoteException {
+        p.setNome("NomeMudado");
+        System.out.println("nomeNoServer: " + p.getNome());
+        return p;
+    }
     
 }
