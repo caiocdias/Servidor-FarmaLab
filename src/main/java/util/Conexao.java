@@ -17,9 +17,9 @@ public class Conexao {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
         }catch(ClassNotFoundException e){
-            System.out.println("Driver nÃ£o encontrado: "+ e.getMessage());
+            System.out.println("Driver nao encontrado: "+ e.getMessage());
         }
-        String url = "jdbc:mysql://localhost:/vendas";
+        String url = "jdbc:mysql://localhost:3306/FarmaLab";
         String usuario = "root";
         String senha = "root";
         try{

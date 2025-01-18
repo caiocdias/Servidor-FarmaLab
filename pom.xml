@@ -8,6 +8,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>20</maven.compiler.release>
-        <exec.mainClass>com.uemg.servidor.farmalab.ServidorFarmaLab</exec.mainClass>
+        <exec.mainClass>view.Servidor</exec.mainClass>
     </properties>
+    
+    <dependencies>
+    <!-- Dependência do MySQL Connector/J -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.33</version>
+    </dependency>
+</dependencies>
+    
 </project>

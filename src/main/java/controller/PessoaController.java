@@ -21,27 +21,22 @@ public class PessoaController extends UnicastRemoteObject implements InterfacePe
     @Override
     public void inserirPessoa(Pessoa p) throws RemoteException {
         
-        String sql = "insert into Pessoa (nome,endereco,cpf) values (?,?,?)";
+        String sql = "insert into Pessoa (nome,endereco,cpf,telefone) values (?,?,?,?)";
+        System.out.println("Indo conectar");
         Conexao.conectar();
+        System.out.println("Conectado");
         try{
             PreparedStatement sentenca = Conexao.con.prepareStatement(sql);
             sentenca.setString(1, p.getNome());
             sentenca.setString(2, p.getEndereco());
             sentenca.setString(3, p.getCpf());
-            /* if(!sentenca.execute())
-                retorno = true; */
+            sentenca.setString(4, p.getTelefone());
+            System.out.println("Setenca definida");
+           sentenca.execute();
         }catch(SQLException e){
             System.out.println(e.getMessage());
         } 
         Conexao.desconectar();
         
     }
-
-    @Override
-    public Pessoa getPessoa(Pessoa p) throws RemoteException {
-        p.setNome("NomeMudado");
-        System.out.println("nomeNoServer: " + p.getNome());
-        return p;
-    }
-    
 }

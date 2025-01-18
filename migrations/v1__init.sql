@@ -4,7 +4,7 @@ USE FarmaLab;
 CREATE TABLE IF NOT EXISTS pessoa (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
-    cpf VARCHAR(14),
+    cpf VARCHAR(14) UNIQUE,
     endereco VARCHAR(100),
     telefone VARCHAR(20),
     created_at TIMESTAMP,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS cliente (
 
 CREATE TABLE IF NOT EXISTS medico_parceiro (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    crm VARCHAR(13),
+    crm VARCHAR(7),
     estado VARCHAR(2),
     habilitado BOOLEAN,
     created_at TIMESTAMP,
