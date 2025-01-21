@@ -18,11 +18,13 @@ public class MedicoParceiro extends Pessoa implements Serializable {
     private Timestamp updated_at;
 
     
-    public MedicoParceiro(int id, String nome, String cpf, String endereco, String telefone, String crm, String estado, boolean habilitado) {
+    public MedicoParceiro(int id, String nome, String cpf, String endereco, String telefone, String crm, String estado, boolean habilitado, Timestamp created_at, Timestamp updated_at) {
         super(id, nome, cpf, endereco, telefone);
         setCrm(crm);
         setEstado(estado);
         setHabilitado(habilitado);
+        setCreated_at(created_at);
+        setUpdated_at(updated_at);
     };
     public String getCrm() {
         return crm;
@@ -54,5 +56,13 @@ public class MedicoParceiro extends Pessoa implements Serializable {
 
     public Timestamp getUpdated_at() {
         return updated_at;
+    }
+
+    public void setCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
+    }
+
+    public void setUpdated_at(Timestamp updated_at) {
+        this.updated_at = updated_at;
     }
 }
