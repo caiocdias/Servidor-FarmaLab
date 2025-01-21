@@ -18,8 +18,8 @@ public class Funcionario extends Pessoa implements Serializable {
     private Timestamp created_at;
     private Timestamp updated_at;
  
-    public Funcionario(String cargo, String password, float salario, boolean habilitado) {
-        super();
+    public Funcionario(int id, String nome, String cpf, String endereco, String telefone, String cargo, String password, float salario, boolean habilitado) {
+        super(id, nome, cpf, endereco, telefone);
         setCargo(cargo);
         setPassword(password);
         setSalario(salario);

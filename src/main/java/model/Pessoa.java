@@ -21,16 +21,28 @@ public class Pessoa implements Serializable {
     }
     
     public Pessoa(int id, String nome, String cpf, String endereco, String telefone) {
+        setId(id);
         setNome(nome);
         setCpf(cpf);
         setEndereco(endereco);
         setTelefone(telefone);
-}
+    }
+    
+    public Pessoa(String nome, String cpf, String endereco, String telefone) {
+        setNome(nome);
+        setCpf(cpf);
+        setEndereco(endereco);
+        setTelefone(telefone);
+    }
     
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    };
+    
     public String getNome() {
         return nome;
     }
