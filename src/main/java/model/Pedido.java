@@ -6,6 +6,7 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import model.enums.StatusPedido;
 
 /**
  *
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
  */
 public class Pedido implements Serializable {
     private int id;
-    private String status;
+    private StatusPedido status_pedido;
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -23,9 +24,9 @@ public class Pedido implements Serializable {
         
     };
     
-    public Pedido(int id, String status, boolean habilitado, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario) {
+    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario) {
         setId(id);
-        setStatus(status);
+        setStatus_pedido(status_pedido);
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
@@ -41,13 +42,6 @@ public class Pedido implements Serializable {
         this.id = id;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public boolean isHabilitado() {
         return habilitado;
@@ -91,6 +85,14 @@ public class Pedido implements Serializable {
         if (funcionario != null) {
             this.funcionario = funcionario; 
         }
+    }
+
+    public StatusPedido getStatus_pedido() {
+        return status_pedido;
+    }
+
+    public void setStatus_pedido(StatusPedido status_pedido) {
+        this.status_pedido = status_pedido;
     }
     
 }
