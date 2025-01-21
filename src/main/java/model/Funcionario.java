@@ -4,6 +4,7 @@
  */
 package model;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  *
@@ -14,7 +15,9 @@ public class Funcionario extends Pessoa implements Serializable {
     private String password;
     private float salario;
     private boolean habilitado;
-
+    private Timestamp created_at;
+    private Timestamp updated_at;
+ 
     public Funcionario() {
         super();
     }
@@ -51,20 +54,11 @@ public class Funcionario extends Pessoa implements Serializable {
         this.habilitado = habilitado;
     }
 
-    @Override
-    public String toString() {
-        return "Funcionario{" +
-                "id=" + getId() +
-                ", nome='" + getNome() + '\'' +
-                ", cpf='" + getCpf() + '\'' +
-                ", endereco='" + getEndereco() + '\'' +
-                ", telefone='" + getTelefone() + '\'' +
-                ", created_at=" + getCreated_at() +
-                ", updated_at=" + getUpdated_at() +
-                ", cargo='" + cargo + '\'' +
-                ", password='[PROTECTED]'" +
-                ", salario=" + salario +
-                ", habilitado=" + habilitado +
-                '}';
+    public Timestamp getCreated_at() {
+        return created_at;
+    }
+
+    public Timestamp getUpdated_at() {
+        return updated_at;
     }
 }
