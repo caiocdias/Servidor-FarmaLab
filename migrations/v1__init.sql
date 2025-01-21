@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS pessoa (
 );
 
 CREATE TABLE IF NOT EXISTS funcionario (
-    id INT AUTO_INCREMENT PRIMARY KEY,
     cargo VARCHAR(50),
     password VARCHAR(255),
     salario FLOAT,
@@ -20,7 +19,7 @@ CREATE TABLE IF NOT EXISTS funcionario (
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
 
-    pessoa_id INT NOT NULL,
+    pessoa_id INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_funcionario_pessoa
         FOREIGN KEY (pessoa_id)
             REFERENCES pessoa(id)
@@ -29,12 +28,11 @@ CREATE TABLE IF NOT EXISTS funcionario (
 );
 
 CREATE TABLE IF NOT EXISTS cliente (
-    id INT AUTO_INCREMENT PRIMARY KEY,
     habilitado BOOLEAN,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
 
-    pessoa_id INT NOT NULL,
+    pessoa_id INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_cliente_pessoa
         FOREIGN KEY (pessoa_id)
         REFERENCES pessoa(id)
@@ -43,14 +41,13 @@ CREATE TABLE IF NOT EXISTS cliente (
 );
 
 CREATE TABLE IF NOT EXISTS medico_parceiro (
-    id INT AUTO_INCREMENT PRIMARY KEY,
     crm VARCHAR(7),
     estado VARCHAR(2),
     habilitado BOOLEAN,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
 
-    pessoa_id INT NOT NULL,
+    pessoa_id INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_medico_parceiro_pessoa
         FOREIGN KEY (pessoa_id)
         REFERENCES pessoa(id)
