@@ -17,6 +17,13 @@ public class MedicoParceiro extends Pessoa implements Serializable {
     private Timestamp created_at;
     private Timestamp updated_at;
 
+    
+    public MedicoParceiro(int id, String nome, String cpf, String endereco, String telefone, String crm, String estado, boolean habilitado) {
+        super(id, nome, cpf, endereco, telefone);
+        setCrm(crm);
+        setEstado(estado);
+        setHabilitado(habilitado);
+    };
     public String getCrm() {
         return crm;
     }

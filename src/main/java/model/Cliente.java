@@ -15,6 +15,10 @@ public class Cliente extends Pessoa implements Serializable {
     private Timestamp created_at;
     private Timestamp updated_at;
 
+    public Cliente(int id, String nome, String cpf, String endereco, String telefone, boolean habilitado) {
+        super(id, nome, cpf, endereco, telefone);
+        setHabilitado(habilitado);
+    }
     public boolean isHabilitado() {
         return habilitado;
     }
