@@ -66,7 +66,6 @@ public class ControllerFuncionario extends UnicastRemoteObject implements Interf
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                // Atualizar informações na tabela 'pessoa'
                 String sqlPessoa = "UPDATE pessoa SET nome = ?, endereco = ?, cpf = ?, telefone = ? WHERE id = ?";
                 PreparedStatement stmtPessoa = conexao.prepareStatement(sqlPessoa);
                 stmtPessoa.setString(1, funcionario.getNome());
@@ -76,7 +75,6 @@ public class ControllerFuncionario extends UnicastRemoteObject implements Interf
                 stmtPessoa.setInt(5, funcionario.getId());
                 stmtPessoa.executeUpdate();
 
-                // Atualizar informações na tabela 'funcionario'
                 String sqlFuncionario = "UPDATE funcionario SET cargo = ?, password = ?, salario = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
                 PreparedStatement stmtFuncionario = conexao.prepareStatement(sqlFuncionario);
                 stmtFuncionario.setString(1, funcionario.getCargo());
@@ -98,4 +96,31 @@ public class ControllerFuncionario extends UnicastRemoteObject implements Interf
         }
     }
 
+    @Override
+    public void desativarFuncionario(int id) throws RemoteException {
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sqlFuncionario = "UPDATE funcionario SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sqlFuncionario);
+                stmt.setInt(1, id);
+                int linhasAfetadas = stmt.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("Funcionário desativado com sucesso!");
+                } else {
+                    System.out.println("Nenhum funcionário encontrado com o ID fornecido.");
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao desativar funcionário: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+    }
 }
