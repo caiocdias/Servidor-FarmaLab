@@ -19,7 +19,7 @@ public class Prescricao implements Serializable {
     private Cliente cliente;
     
     public Prescricao() {
-    };
+    }
     
     public Prescricao(int id, String crm, Timestamp created_at, Timestamp updated_at, Cliente cliente) {
         setId(id);
@@ -27,7 +27,8 @@ public class Prescricao implements Serializable {
         setCreated_at(created_at);
         setUpdated_at(updated_at);
         setCliente(cliente); 
-    };
+    }
+    
     public int getId() {
         return id;
     }

@@ -22,7 +22,7 @@ public class Tributo implements Serializable{
     
     public Tributo(){
         
-    };
+    }
     
     public Tributo(int id, String estado, String nome, String nome_imposto, float porcentagem, boolean habilitado){
         setId(id);
@@ -32,7 +32,7 @@ public class Tributo implements Serializable{
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
-    };
+    }
 
     public int getId() {
         return id;

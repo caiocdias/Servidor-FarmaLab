@@ -21,7 +21,7 @@ public class TipoInsumo implements Serializable{
     
     public TipoInsumo(){
         
-    };
+    }
     
     public TipoInsumo(int id, String nome, float quant, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
@@ -30,7 +30,7 @@ public class TipoInsumo implements Serializable{
         setQuant(quant);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
-    };
+    }
 
     public int getId() {
         return id;

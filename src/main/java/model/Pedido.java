@@ -21,9 +21,10 @@ public class Pedido implements Serializable {
     private Timestamp updated_at;
     private Cliente cliente;
     private Funcionario funcionario;
+    
     public Pedido() {
         
-    };
+    }
     
     public Pedido(int id, StatusPedido status_pedido, boolean habilitado, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario) {
         setId(id);
@@ -33,7 +34,7 @@ public class Pedido implements Serializable {
         setUpdated_at(updated_at);
         setCliente(cliente);
         setFuncionario(funcionario);
-    };
+    }
     
     public int getId() {
         return id;

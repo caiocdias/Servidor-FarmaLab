@@ -20,7 +20,7 @@ public class TipoProduto implements Serializable {
     
     public TipoProduto(){
         
-    };
+    }
     
     public TipoProduto(int id, String nome, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
@@ -28,7 +28,7 @@ public class TipoProduto implements Serializable {
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
-    };
+    }
 
     public int getId() {
         return id;

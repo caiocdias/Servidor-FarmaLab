@@ -17,14 +17,14 @@ public class Auditoria implements Serializable {
 
     public Auditoria() {
         
-    };
+    }
     
     public Auditoria(int id, String movimento, Timestamp data, Funcionario funcionario) {
         setId(id);
         setMovimento(movimento);
         setData(data);
         setFuncionario(funcionario);
-    };
+    }
     
     public int getId() {
         return id;

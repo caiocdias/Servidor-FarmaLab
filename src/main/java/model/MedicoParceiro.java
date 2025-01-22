@@ -25,7 +25,7 @@ public class MedicoParceiro extends Pessoa implements Serializable {
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
-    };
+    }
     public String getCrm() {
         return crm;
     }

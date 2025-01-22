@@ -24,7 +24,7 @@ public class NotaFiscal implements Serializable{
 
     public NotaFiscal(){
     
-    };
+    }
     
     public NotaFiscal(int id, int num_nota, Timestamp data_emissao, float valor_total, boolean habilitado, Tributo tributo, Timestamp created_at, Timestamp updated_at){
         setId(id);
@@ -36,7 +36,7 @@ public class NotaFiscal implements Serializable{
         setCreated_at(created_at);
         setUpdated_at(updated_at);
         
-    };
+    }
     
     
     public int getId() {
