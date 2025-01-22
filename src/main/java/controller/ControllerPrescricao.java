@@ -4,6 +4,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import model.Cliente;
 import model.Prescricao;
 import util.Conexao;
 
@@ -71,6 +73,66 @@ public class ControllerPrescricao extends UnicastRemoteObject implements Interfa
         } finally {
             Conexao.desconectar();
         }
+    }
+
+    @Override
+    public Prescricao obterPrescricao(Integer id, String crm) throws RemoteException {
+        Prescricao prescricao = null;
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT p.id, p.crm, p.created_at, p.updated_at, p.id_cliente, "
+                        + "c.nome, c.cpf, c.endereco, c.telefone "
+                        + "FROM prescricao p INNER JOIN pessoa c ON p.id_cliente = c.id WHERE 1=1";
+                if (id != null) {
+                    sql += " AND p.id = ?";
+                }
+                if (crm != null && !crm.isEmpty()) {
+                    sql += " AND p.crm = ?";
+                }
+
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+
+                int paramIndex = 1;
+                if (id != null) {
+                    stmt.setInt(paramIndex++, id);
+                }
+                if (crm != null && !crm.isEmpty()) {
+                    stmt.setString(paramIndex++, crm);
+                }
+
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    prescricao = new Prescricao(
+                            rs.getInt("id"),
+                            rs.getString("crm"),
+                            rs.getTimestamp("created_at"),
+                            rs.getTimestamp("updated_at"),
+                            new Cliente(
+                                    rs.getInt("id_cliente"),
+                                    rs.getString("nome"),
+                                    rs.getString("cpf"),
+                                    rs.getString("endereco"),
+                                    rs.getString("telefone"),
+                                    true, // Assuming habilitado is true
+                                    rs.getTimestamp("created_at"),
+                                    rs.getTimestamp("updated_at")
+                            )
+                    );
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao pesquisar prescrição: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return prescricao;
     }
 
 }
