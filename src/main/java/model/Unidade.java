@@ -22,6 +22,23 @@ public class Unidade implements Serializable {
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
+    
+    public Unidade(){
+        
+    };
+    
+    public Unidade(int id, String cep, String cidade, String bairro, String rua, String complemento, String estado, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+        setId(id);
+        setCep(cep);
+        setCidade(cidade);
+        setBairro(bairro);
+        setRua(rua);
+        setComplemento(complemento);
+        setEstado(estado);
+        setHabilitado(habilitado);
+        setCreated_at(created_at);
+        setUpdated_at(updated_at);
+    };
 
     public int getId() {
         return id;
