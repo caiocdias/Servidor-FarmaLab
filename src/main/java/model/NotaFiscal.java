@@ -6,6 +6,8 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,7 +19,7 @@ public class NotaFiscal implements Serializable{
     private Timestamp data_emissao;
     private float valor_total;
     private boolean habilitado;
-    private Tributo tributo;
+    private List<Tributo> tributo = new ArrayList<>();
     private Timestamp created_at;
     private Timestamp updated_at;
     
@@ -26,7 +28,7 @@ public class NotaFiscal implements Serializable{
     
     }
     
-    public NotaFiscal(int id, int num_nota, Timestamp data_emissao, float valor_total, boolean habilitado, Tributo tributo, Timestamp created_at, Timestamp updated_at){
+    public NotaFiscal(int id, int num_nota, Timestamp data_emissao, float valor_total, boolean habilitado, List<Tributo> tributo, Timestamp created_at, Timestamp updated_at){
         setId(id);
         setNum_nota(num_nota);
         setData_emissao(data_emissao);
@@ -95,16 +97,13 @@ public class NotaFiscal implements Serializable{
         this.updated_at = updated_at;
     }
 
-    public Tributo getTributo() {
+    public List<Tributo> getTributo() {
         return tributo;
     }
 
-    public void setTributo(Tributo tributo) {
-        if (tributo != null) {
-            this.tributo = tributo;
-        }
+    public void setTributo(List<Tributo> tributo) {
+        this.tributo = tributo;
     }
-    
     
     
 }
