@@ -23,6 +23,23 @@ public class Produto implements Serializable{
     private Timestamp created_at;
     private Timestamp updated_at;
 
+    public Produto(){
+        
+    };
+
+    public Produto(int id, Pedido pedido, TipoProduto tipo_produto, boolean pronta_entrega, boolean coletado, Estoque estoque, Timestamp data_validade, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+        setId(id);
+        setPedido(pedido);
+        setTipo_produto(tipo_produto);
+        setPronta_entrega(pronta_entrega);
+        setColetado(coletado);
+        setEstoque(estoque);
+        setData_validade(data_validade);
+        setHabilitado(habilitado);
+        setCreated_at(created_at);
+        setUpdated_at(updated_at);
+    };
+
     public int getId() {
         return id;
     }
