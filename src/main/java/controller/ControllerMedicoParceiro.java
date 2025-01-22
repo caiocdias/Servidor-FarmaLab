@@ -94,4 +94,32 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
             Conexao.desconectar();
         }
     }
+
+    @Override
+    public void desativarMedicoParceiro(int id) throws RemoteException {
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sqlMedicoParceiro = "UPDATE medico_parceiro SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sqlMedicoParceiro);
+                stmt.setInt(1, id);
+                int linhasAfetadas = stmt.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("Médico Parceiro desativado com sucesso!");
+                } else {
+                    System.out.println("Nenhum Médico Parceiro encontrado com o ID fornecido.");
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao desativar médico parceiro: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+    }
 }
