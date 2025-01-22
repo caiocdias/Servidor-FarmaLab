@@ -18,7 +18,20 @@ public class Estoque implements Serializable{
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
-
+    
+    public Estoque() {
+        
+    }
+    
+    public Estoque(int id, Unidade unidade, String nome, boolean habilitado, Timestamp created_at, Timestamp updated_at) {
+        setId(id);
+        setUnidade(unidade);
+        setNome(nome);
+        setHabilitado(habilitado);
+        setCreated_at(created_at);
+        setUpdated_at(updated_at);
+    }
+    
     public int getId() {
         return id;
     }
