@@ -11,23 +11,25 @@ import java.sql.Timestamp;
  *
  * @author Isabely
  */
-public class TipoInsumo implements Serializable{
+public class Tributo implements Serializable{
     private int id;
-    private String nome;
-    private float quant;
+    private String estado;
+    private String nome_imposto;
+    private float porcentagem;
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
     
-    public TipoInsumo(){
+    public Tributo(){
         
     };
     
-    public TipoInsumo(int id, String nome, float quant, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+    public Tributo(int id, String estado, String nome, String nome_imposto, float porcentagem, boolean habilitado){
         setId(id);
-        setNome(nome);
+        setEstado(estado);
+        setNome_imposto(nome_imposto);
+        setPorcentagem(porcentagem);
         setHabilitado(habilitado);
-        setQuant(quant);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
     };
@@ -40,20 +42,28 @@ public class TipoInsumo implements Serializable{
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getEstado() {
+        return estado;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
-    public float getQuant() {
-        return quant;
+    public String getNome_imposto() {
+        return nome_imposto;
     }
 
-    public void setQuant(float quant) {
-        this.quant = quant;
+    public void setNome_imposto(String nome_imposto) {
+        this.nome_imposto = nome_imposto;
+    }
+
+    public float getPorcentagem() {
+        return porcentagem;
+    }
+
+    public void setPorcentagem(float porcentagem) {
+        this.porcentagem = porcentagem;
     }
 
     public boolean isHabilitado() {
@@ -79,8 +89,6 @@ public class TipoInsumo implements Serializable{
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
     }
-    
-    
     
     
     
