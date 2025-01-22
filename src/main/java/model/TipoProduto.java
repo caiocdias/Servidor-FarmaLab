@@ -6,6 +6,8 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -18,18 +20,20 @@ public class TipoProduto implements Serializable {
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
+    private List<TipoInsumo> tipo_insumos = new ArrayList<>();
     
     public TipoProduto(){
         
     }
     
-    public TipoProduto(int id, String nome, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+    public TipoProduto(int id, String nome, boolean habilitado, Timestamp created_at, Timestamp updated_at, List<TipoInsumo> tipo_insumos){
         setId(id);
         setNome(nome);
         setInstrucoes(instrucoes);
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
+        setTipo_insumos(tipo_insumos);
     }
 
     public int getId() {
@@ -78,5 +82,13 @@ public class TipoProduto implements Serializable {
 
     public void setInstrucoes(String instrucoes) {
         this.instrucoes = instrucoes;
+    }
+
+    public List<TipoInsumo> getTipo_insumos() {
+        return tipo_insumos;
+    }
+
+    public void setTipo_insumos(List<TipoInsumo> tipo_insumos) {
+        this.tipo_insumos = tipo_insumos;
     }
 }
