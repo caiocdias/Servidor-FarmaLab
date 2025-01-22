@@ -270,14 +270,14 @@ CREATE TABLE IF NOT EXISTS produto (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS pescricao (
+CREATE TABLE IF NOT EXISTS prescricao (
     id INT AUTO_INCREMENT PRIMARY KEY,
     crm VARCHAR(13),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     cliente_id INT NOT NULL,
-    CONSTRAINT fk_pescricao_cliente
+    CONSTRAINT fk_prescricao_cliente
         FOREIGN KEY (cliente_id)
         REFERENCES cliente(id)
         ON DELETE CASCADE
