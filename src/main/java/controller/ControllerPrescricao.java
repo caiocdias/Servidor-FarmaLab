@@ -76,6 +76,35 @@ public class ControllerPrescricao extends UnicastRemoteObject implements Interfa
     }
 
     @Override
+    public void desativarPrescricao(int id) throws RemoteException {
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "DELETE FROM prescricao WHERE id = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setInt(1, id);
+
+                int linhasAfetadas = stmt.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("Prescrição removida com sucesso!");
+                } else {
+                    System.out.println("Nenhuma prescrição encontrada com o ID fornecido.");
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao remover prescrição: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+    }
+
+    @Override
     public Prescricao obterPrescricao(Integer id, String crm) throws RemoteException {
         Prescricao prescricao = null;
         try {

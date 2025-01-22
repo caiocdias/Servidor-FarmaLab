@@ -10,5 +10,7 @@ public interface InterfacePrescricao extends Remote {
 
     void atualizarPrescricao(Prescricao prescricao) throws RemoteException;
 
+    void desativarPrescricao(int id) throws RemoteException;
+
     Prescricao obterPrescricao(Integer id, String crm) throws RemoteException;
 }
