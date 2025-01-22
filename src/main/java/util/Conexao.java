@@ -21,7 +21,7 @@ public class Conexao {
         }
         String url = "jdbc:mysql://localhost:3306/FarmaLab";
         String usuario = "root";
-        String senha = "root";
+        String senha = "toor";
         try{
             con = DriverManager.getConnection(url, usuario, senha);
         }catch(SQLException e){
