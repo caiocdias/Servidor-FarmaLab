@@ -16,6 +16,7 @@ public class Pedido implements Serializable {
     private int id;
     private StatusPedido status_pedido;
     private boolean habilitado;
+    private boolean pronta_entrega;
     private Timestamp created_at;
     private Timestamp updated_at;
     private Cliente cliente;
@@ -93,6 +94,14 @@ public class Pedido implements Serializable {
 
     public void setStatus_pedido(StatusPedido status_pedido) {
         this.status_pedido = status_pedido;
+    }
+
+    public boolean isPronta_entrega() {
+        return pronta_entrega;
+    }
+
+    public void setPronta_entrega(boolean pronta_entrega) {
+        this.pronta_entrega = pronta_entrega;
     }
     
 }
