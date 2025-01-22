@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controller;
 
 import java.rmi.RemoteException;
@@ -10,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import model.Cliente;
 import util.Conexao;
 
 public class ControllerCliente extends UnicastRemoteObject implements InterfaceCliente {
@@ -58,5 +55,43 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
         } finally {
             Conexao.desconectar();
         }
+    }
+    
+    @Override
+    public Cliente obterCliente(int id) throws RemoteException {
+        Cliente cliente = null;
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at " +
+                             "FROM pessoa p INNER JOIN clientes c ON p.id = c.id_pessoa WHERE p.id = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    cliente = new Cliente(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("cpf"),
+                        rs.getString("endereco"),
+                        rs.getString("telefone"),
+                        rs.getBoolean("habilitado"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at")
+                    );
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao obter cliente: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return cliente;
     }
 }
