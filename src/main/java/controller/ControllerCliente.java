@@ -22,7 +22,6 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                // Inserir na tabela pessoa
                 String sqlPessoa = "INSERT INTO pessoa (nome, endereco, cpf, telefone) VALUES (?, ?, ?, ?)";
                 PreparedStatement stmtPessoa = conexao.prepareStatement(sqlPessoa, Statement.RETURN_GENERATED_KEYS);
                 stmtPessoa.setString(1, cliente.getNome());
@@ -31,14 +30,12 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
                 stmtPessoa.setString(4, cliente.getTelefone());
                 stmtPessoa.executeUpdate();
 
-                // Obter o ID gerado para a tabela pessoa
                 ResultSet rs = stmtPessoa.getGeneratedKeys();
                 int idPessoa = 0;
                 if (rs.next()) {
                     idPessoa = rs.getInt(1);
                 }
 
-                // Inserir na tabela cliente
                 String sqlCliente = "INSERT INTO cliente (id_pessoa, habilitado) VALUES (?, ?)";
                 PreparedStatement stmtCliente = conexao.prepareStatement(sqlCliente);
                 stmtCliente.setInt(1, idPessoa);
@@ -55,44 +52,6 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
         } finally {
             Conexao.desconectar();
         }
-    }
-    
-    @Override
-    public Cliente obterCliente(int id) throws RemoteException {
-        Cliente cliente = null;
-        try {
-            Conexao.conectar();
-            Connection conexao = Conexao.con;
-
-            if (conexao != null) {
-                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at " +
-                             "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa WHERE p.id = ?";
-                PreparedStatement stmt = conexao.prepareStatement(sql);
-                stmt.setInt(1, id);
-                ResultSet rs = stmt.executeQuery();
-
-                if (rs.next()) {
-                    cliente = new Cliente(
-                        rs.getInt("id"),
-                        rs.getString("nome"),
-                        rs.getString("cpf"),
-                        rs.getString("endereco"),
-                        rs.getString("telefone"),
-                        rs.getBoolean("habilitado"),
-                        rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at")
-                    );
-                }
-            } else {
-                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RemoteException("Erro ao obter cliente: " + e.getMessage());
-        } finally {
-            Conexao.desconectar();
-        }
-        return cliente;
     }
     
     @Override
@@ -158,14 +117,13 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
     }
     
     @Override
-    public Cliente pesquisarCliente(Integer id, String cpf) throws RemoteException {
+    public Cliente obterCliente(Integer id, String cpf) throws RemoteException {
     Cliente cliente = null;
     try {
         Conexao.conectar();
         Connection conexao = Conexao.con;
 
         if (conexao != null) {
-            // Construir a query com base nos parâmetros fornecidos
             String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at " +
                          "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa WHERE 1=1";
             if (id != null) {
@@ -177,7 +135,6 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
 
-            // Adicionar os parâmetros dinamicamente
             int paramIndex = 1;
             if (id != null) {
                 stmt.setInt(paramIndex++, id);
