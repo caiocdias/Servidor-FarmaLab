@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS pessoa (
     cpf VARCHAR(14) UNIQUE,
     endereco VARCHAR(100),
     telefone VARCHAR(20),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS funcionario (
@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS funcionario (
     password VARCHAR(255),
     salario FLOAT,
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     pessoa_id INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_funcionario_pessoa
@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS funcionario (
 
 CREATE TABLE IF NOT EXISTS cliente (
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     pessoa_id INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_cliente_pessoa
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS medico_parceiro (
     crm VARCHAR(7),
     estado VARCHAR(2),
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     pessoa_id INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_medico_parceiro_pessoa
@@ -77,16 +77,16 @@ CREATE TABLE IF NOT EXISTS unidade (
     complemento VARCHAR(20),
     estado VARCHAR(2),
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS estoque (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50),
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     unidade_id INT NOT NULL,
     CONSTRAINT fk_estoque_unidade
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS tipo_insumo (
     nome VARCHAR(50),
     quant FLOAT,
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS tipo_insumo_tipo_produto (
@@ -128,8 +128,8 @@ CREATE TABLE IF NOT EXISTS insumo (
     quant FLOAT,
     data_validade TIMESTAMP,
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     estoque_id INT NOT NULL,
     CONSTRAINT fk_insumo_estoque
@@ -152,8 +152,8 @@ CREATE TABLE IF NOT EXISTS tributo (
     nome_imposto VARCHAR(20),
     porcentagem FLOAT,
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS nota_fiscal (
@@ -162,8 +162,8 @@ CREATE TABLE IF NOT EXISTS nota_fiscal (
     data_emissao TIMESTAMP,
     valor_total FLOAT,
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS tributo_nota_fiscal (
@@ -188,8 +188,8 @@ CREATE TABLE IF NOT EXISTS pedido (
     id INT AUTO_INCREMENT PRIMARY KEY,
     status VARCHAR(20),
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    UPDATED_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UPDATED_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     cliente_id INT NOT NULL,
     CONSTRAINT fk_pedido_cliente
@@ -210,14 +210,14 @@ CREATE TABLE IF NOT EXISTS tipo_produto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50),
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS venda (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     unidade_id INT NOT NULL,
     CONSTRAINT fk_venda_unidade
@@ -238,8 +238,8 @@ CREATE TABLE IF NOT EXISTS produto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     data_validade TIMESTAMP,
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     pedido_id INT NOT NULL,
     CONSTRAINT fk_produto_pedido
@@ -273,8 +273,8 @@ CREATE TABLE IF NOT EXISTS produto (
 CREATE TABLE IF NOT EXISTS pescricao (
     id INT AUTO_INCREMENT PRIMARY KEY,
     crm VARCHAR(13),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     cliente_id INT NOT NULL,
     CONSTRAINT fk_pescricao_cliente
@@ -289,8 +289,8 @@ CREATE TABLE IF NOT EXISTS orcamento (
     descricao VARCHAR(50),
     status VARCHAR(20),
     habilitado BOOLEAN,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     unidade_id INT NOT NULL,
     CONSTRAINT fk_orcamento_unidade

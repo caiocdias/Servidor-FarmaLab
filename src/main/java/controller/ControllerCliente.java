@@ -22,7 +22,6 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                // Inserir na tabela pessoa
                 String sqlPessoa = "INSERT INTO pessoa (nome, endereco, cpf, telefone) VALUES (?, ?, ?, ?)";
                 PreparedStatement stmtPessoa = conexao.prepareStatement(sqlPessoa, Statement.RETURN_GENERATED_KEYS);
                 stmtPessoa.setString(1, nome);
@@ -31,15 +30,13 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
                 stmtPessoa.setString(4, telefone);
                 stmtPessoa.executeUpdate();
 
-                // Obter o ID gerado para a tabela pessoa
                 ResultSet rs = stmtPessoa.getGeneratedKeys();
                 int idPessoa = 0;
                 if (rs.next()) {
                     idPessoa = rs.getInt(1);
                 }
 
-                // Inserir na tabela clientes
-                String sqlCliente = "INSERT INTO clientes (id_pessoa, habilitado) VALUES (?, ?)";
+                String sqlCliente = "INSERT INTO cliente (id_pessoa, habilitado) VALUES (?, ?)";
                 PreparedStatement stmtCliente = conexao.prepareStatement(sqlCliente);
                 stmtCliente.setInt(1, idPessoa);
                 stmtCliente.setBoolean(2, habilitado);
@@ -66,7 +63,7 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
 
             if (conexao != null) {
                 String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at " +
-                             "FROM pessoa p INNER JOIN clientes c ON p.id = c.id_pessoa WHERE p.id = ?";
+                             "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa WHERE p.id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, id);
                 ResultSet rs = stmt.executeQuery();
@@ -93,5 +90,39 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Conexao.desconectar();
         }
         return cliente;
+    }
+    
+    @Override
+    public void atualizarCliente(Cliente cliente) throws RemoteException {
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sqlPessoa = "UPDATE pessoa SET nome = ?, endereco = ?, cpf = ?, telefone = ? WHERE id = ?";
+                PreparedStatement stmtPessoa = conexao.prepareStatement(sqlPessoa);
+                stmtPessoa.setString(1, cliente.getNome());
+                stmtPessoa.setString(2, cliente.getEndereco());
+                stmtPessoa.setString(3, cliente.getCpf());
+                stmtPessoa.setString(4, cliente.getTelefone());
+                stmtPessoa.setInt(5, cliente.getId());
+                stmtPessoa.executeUpdate();
+
+                String sqlCliente = "UPDATE cliente SET habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
+                PreparedStatement stmtCliente = conexao.prepareStatement(sqlCliente);
+                stmtCliente.setBoolean(1, cliente.isHabilitado());
+                stmtCliente.setInt(2, cliente.getId());
+                stmtCliente.executeUpdate();
+
+                System.out.println("Cliente atualizado com sucesso!");
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao atualizar cliente: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
     }
 }
