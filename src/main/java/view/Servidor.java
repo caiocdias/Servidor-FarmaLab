@@ -1,35 +1,43 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package view;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import controller.ControllerCliente;
 
-/**
- *
- * @author Caio Cezar Dias
- */
+import java.rmi.Naming;
+import java.rmi.registry.LocateRegistry;
+import controller.ControllerCliente;
+import controller.ControllerFuncionario;
+import controller.ControllerMedicoParceiro;
+import controller.ControllerPrescricao;
+import controller.InterfaceCliente;
+import controller.InterfaceFuncionario;
+import controller.InterfaceMedicoParceiro;
+import controller.InterfacePrescricao;
+
 public class Servidor {
+
     public static void main(String[] args) {
         try {
-            // Define o nome do serviço RMI
-            String nomeServico = "ClienteService";
+            LocateRegistry.createRegistry(1099);
 
-            // Cria uma instância do controlador (implementação da interface)
-            ControllerCliente clienteService = new ControllerCliente();
+            InterfaceCliente clienteStub = new ControllerCliente();
+            Naming.rebind("//localhost/Cliente", clienteStub);
+            System.out.println("Serviço de Cliente registrado com sucesso!");
 
-            // Cria o registro RMI na porta padrão 1099
-            Registry registro = LocateRegistry.createRegistry(1099);
+            InterfaceFuncionario funcionarioStub = new ControllerFuncionario();
+            Naming.rebind("//localhost/Funcionario", funcionarioStub);
+            System.out.println("Serviço de Funcionario registrado com sucesso!");
 
-            // Registra o serviço com o nome especificado
-            registro.rebind(nomeServico, clienteService);
+            InterfaceMedicoParceiro medicoParceiroStub = new ControllerMedicoParceiro();
+            Naming.rebind("//localhost/MedicoParceiro", medicoParceiroStub);
+            System.out.println("Serviço de MedicoParceiro registrado com sucesso!");
 
-            System.out.println("Servidor RMI iniciado e serviço '" + nomeServico + "' registrado.");
+            InterfacePrescricao prescricaoStub = new ControllerPrescricao();
+            Naming.rebind("//localhost/Prescricao", prescricaoStub);
+            System.out.println("Serviço de Prescricao registrado com sucesso!");
+
+            System.out.println("Servidor RMI pronto e aguardando conexões...");
         } catch (Exception e) {
-            System.err.println("Erro ao iniciar o servidor RMI: " + e.getMessage());
             e.printStackTrace();
+            System.out.println("Erro ao iniciar o servidor RMI: " + e.getMessage());
         }
     }
 }
+
