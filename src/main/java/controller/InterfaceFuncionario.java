@@ -2,6 +2,7 @@ package controller;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import model.Funcionario;
 
 public interface InterfaceFuncionario extends Remote {
@@ -13,4 +14,6 @@ public interface InterfaceFuncionario extends Remote {
     public void desativarFuncionario(int id) throws RemoteException;
     
     Funcionario obterFuncionario(Integer id, String cpf) throws RemoteException;
+    
+    List<Funcionario> buscarFuncionariosPorNome(String nome) throws RemoteException;
 }
