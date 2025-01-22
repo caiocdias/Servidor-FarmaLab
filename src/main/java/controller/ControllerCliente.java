@@ -125,4 +125,32 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Conexao.desconectar();
         }
     }
+    
+    @Override
+    public void desativarCliente(int id) throws RemoteException {
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sqlCliente = "UPDATE cliente SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sqlCliente);
+                stmt.setInt(1, id);
+                int linhasAfetadas = stmt.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("Cliente desativado com sucesso!");
+                } else {
+                    System.out.println("Nenhum cliente encontrado com o ID fornecido.");
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao desativar cliente: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+    }
 }
