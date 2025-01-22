@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 public class TipoProduto implements Serializable {
     private int id;
     private String nome;
+    private String instrucoes;
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -25,6 +26,7 @@ public class TipoProduto implements Serializable {
     public TipoProduto(int id, String nome, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
         setNome(nome);
+        setInstrucoes(instrucoes);
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
@@ -68,5 +70,13 @@ public class TipoProduto implements Serializable {
 
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getInstrucoes() {
+        return instrucoes;
+    }
+
+    public void setInstrucoes(String instrucoes) {
+        this.instrucoes = instrucoes;
     }
 }
