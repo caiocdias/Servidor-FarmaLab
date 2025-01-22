@@ -105,6 +105,24 @@ CREATE TABLE IF NOT EXISTS tipo_insumo (
     updated_at TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS tipo_insumo_tipo_produto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    tipo_insumo_id INT NOT NULL,
+    CONSTRAINT fk_tipo_insumo_tipo_produto_tipo_insumo
+        FOREIGN KEY (tipo_insumo_id)
+        REFERENCES tipo_insumo(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    tipo_produto_id INT NOT NULL,
+    CONSTRAINT fk_tipo_insumo_tipo_produto_tipo_produto
+        FOREIGN KEY (tipo_produto_id)
+        REFERENCES tipo_produto(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS insumo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     quant FLOAT,
