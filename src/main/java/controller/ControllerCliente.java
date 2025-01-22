@@ -55,7 +55,7 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Conexao.desconectar();
         }
     }
-    
+
     @Override
     public void atualizarCliente(Cliente cliente) throws RemoteException {
         try {
@@ -89,7 +89,7 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Conexao.desconectar();
         }
     }
-    
+
     @Override
     public void desativarCliente(int id) throws RemoteException {
         try {
@@ -117,60 +117,60 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Conexao.desconectar();
         }
     }
-    
+
     @Override
     public Cliente obterCliente(Integer id, String cpf) throws RemoteException {
-    Cliente cliente = null;
-    try {
-        Conexao.conectar();
-        Connection conexao = Conexao.con;
+        Cliente cliente = null;
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
 
-        if (conexao != null) {
-            String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at " +
-                         "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa WHERE 1=1";
-            if (id != null) {
-                sql += " AND p.id = ?";
-            }
-            if (cpf != null && !cpf.isEmpty()) {
-                sql += " AND p.cpf = ?";
-            }
+            if (conexao != null) {
+                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at "
+                        + "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa WHERE 1=1";
+                if (id != null) {
+                    sql += " AND p.id = ?";
+                }
+                if (cpf != null && !cpf.isEmpty()) {
+                    sql += " AND p.cpf = ?";
+                }
 
-            PreparedStatement stmt = conexao.prepareStatement(sql);
+                PreparedStatement stmt = conexao.prepareStatement(sql);
 
-            int paramIndex = 1;
-            if (id != null) {
-                stmt.setInt(paramIndex++, id);
-            }
-            if (cpf != null && !cpf.isEmpty()) {
-                stmt.setString(paramIndex++, cpf);
-            }
+                int paramIndex = 1;
+                if (id != null) {
+                    stmt.setInt(paramIndex++, id);
+                }
+                if (cpf != null && !cpf.isEmpty()) {
+                    stmt.setString(paramIndex++, cpf);
+                }
 
-            ResultSet rs = stmt.executeQuery();
+                ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                cliente = new Cliente(
-                    rs.getInt("id"),
-                    rs.getString("nome"),
-                    rs.getString("cpf"),
-                    rs.getString("endereco"),
-                    rs.getString("telefone"),
-                    rs.getBoolean("habilitado"),
-                    rs.getTimestamp("created_at"),
-                    rs.getTimestamp("updated_at")
-                );
+                if (rs.next()) {
+                    cliente = new Cliente(
+                            rs.getInt("id"),
+                            rs.getString("nome"),
+                            rs.getString("cpf"),
+                            rs.getString("endereco"),
+                            rs.getString("telefone"),
+                            rs.getBoolean("habilitado"),
+                            rs.getTimestamp("created_at"),
+                            rs.getTimestamp("updated_at")
+                    );
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
-        } else {
-            System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao pesquisar cliente: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        throw new RemoteException("Erro ao pesquisar cliente: " + e.getMessage());
-    } finally {
-        Conexao.desconectar();
+        return cliente;
     }
-    return cliente;
-    }
-    
+
     @Override
     public List<Cliente> buscarClientesPorNome(String nome) throws RemoteException {
         List<Cliente> clientes = new ArrayList<>();
@@ -179,9 +179,9 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at " +
-                             "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa " +
-                             "WHERE p.nome LIKE ?";
+                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at "
+                        + "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa "
+                        + "WHERE p.nome LIKE ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 
@@ -189,14 +189,14 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
 
                 while (rs.next()) {
                     Cliente cliente = new Cliente(
-                        rs.getInt("id"),
-                        rs.getString("nome"),
-                        rs.getString("cpf"),
-                        rs.getString("endereco"),
-                        rs.getString("telefone"),
-                        rs.getBoolean("habilitado"),
-                        rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at")
+                            rs.getInt("id"),
+                            rs.getString("nome"),
+                            rs.getString("cpf"),
+                            rs.getString("endereco"),
+                            rs.getString("telefone"),
+                            rs.getBoolean("habilitado"),
+                            rs.getTimestamp("created_at"),
+                            rs.getTimestamp("updated_at")
                     );
                     clientes.add(cliente);
                 }
