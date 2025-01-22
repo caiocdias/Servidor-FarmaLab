@@ -123,4 +123,62 @@ public class ControllerFuncionario extends UnicastRemoteObject implements Interf
             Conexao.desconectar();
         }
     }
+
+    @Override
+    public Funcionario obterFuncionario(Integer id, String cpf) throws RemoteException {
+        Funcionario funcionario = null;
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, "
+                        + "f.cargo, f.password, f.salario, f.habilitado, f.created_at, f.updated_at "
+                        + "FROM pessoa p INNER JOIN funcionario f ON p.id = f.id_pessoa WHERE 1=1";
+                if (id != null) {
+                    sql += " AND p.id = ?";
+                }
+                if (cpf != null && !cpf.isEmpty()) {
+                    sql += " AND p.cpf = ?";
+                }
+
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+
+                int paramIndex = 1;
+                if (id != null) {
+                    stmt.setInt(paramIndex++, id);
+                }
+                if (cpf != null && !cpf.isEmpty()) {
+                    stmt.setString(paramIndex++, cpf);
+                }
+
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    funcionario = new Funcionario(
+                            rs.getInt("id"),
+                            rs.getString("nome"),
+                            rs.getString("cpf"),
+                            rs.getString("endereco"),
+                            rs.getString("telefone"),
+                            rs.getString("cargo"),
+                            rs.getString("password"),
+                            rs.getFloat("salario"),
+                            rs.getBoolean("habilitado"),
+                            rs.getTimestamp("created_at"),
+                            rs.getTimestamp("updated_at")
+                    );
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao pesquisar funcionário: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return funcionario;
+    }
+
 }

@@ -11,4 +11,6 @@ public interface InterfaceFuncionario extends Remote {
     void atualizarFuncionario(Funcionario funcionario) throws RemoteException;
 
     public void desativarFuncionario(int id) throws RemoteException;
+    
+    Funcionario obterFuncionario(Integer id, String cpf) throws RemoteException;
 }
