@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import model.MedicoParceiro;
 import util.Conexao;
 
@@ -178,4 +180,49 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
         }
         return medicoParceiro;
     }
+
+    @Override
+    public List<MedicoParceiro> buscarMedicosParceirosPorNome(String nome) throws RemoteException {
+        List<MedicoParceiro> medicosParceiros = new ArrayList<>();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, "
+                        + "m.crm, m.estado, m.habilitado, m.created_at, m.updated_at "
+                        + "FROM pessoa p INNER JOIN medico_parceiro m ON p.id = m.id_pessoa "
+                        + "WHERE p.nome LIKE ?";
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setString(1, "%" + nome + "%");
+
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    MedicoParceiro medicoParceiro = new MedicoParceiro(
+                            rs.getInt("id"),
+                            rs.getString("nome"),
+                            rs.getString("cpf"),
+                            rs.getString("endereco"),
+                            rs.getString("telefone"),
+                            rs.getString("crm"),
+                            rs.getString("estado"),
+                            rs.getBoolean("habilitado"),
+                            rs.getTimestamp("created_at"),
+                            rs.getTimestamp("updated_at")
+                    );
+                    medicosParceiros.add(medicoParceiro);
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao buscar médicos parceiros por nome: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return medicosParceiros;
+    }
+
 }

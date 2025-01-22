@@ -2,6 +2,7 @@ package controller;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import model.MedicoParceiro;
 
 public interface InterfaceMedicoParceiro extends Remote {
@@ -13,4 +14,6 @@ public interface InterfaceMedicoParceiro extends Remote {
     void desativarMedicoParceiro(int id) throws RemoteException;
 
     MedicoParceiro obterMedicoParceiro(Integer id, String cpf) throws RemoteException;
+
+    List<MedicoParceiro> buscarMedicosParceirosPorNome(String nome) throws RemoteException;
 }
