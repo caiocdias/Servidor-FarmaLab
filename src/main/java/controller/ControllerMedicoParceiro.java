@@ -36,8 +36,8 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
                     idPessoa = rs.getInt(1);
                 }
 
-                String sqlMedicoParceiro = "INSERT INTO medico_parceiro (id_pessoa, crm, estado, habilitado, created_at, updated_at) " +
-                                           "VALUES (?, ?, ?, ?, ?, ?)";
+                String sqlMedicoParceiro = "INSERT INTO medico_parceiro (id_pessoa, crm, estado, habilitado, created_at, updated_at) "
+                        + "VALUES (?, ?, ?, ?, ?, ?)";
                 PreparedStatement stmtMedicoParceiro = conexao.prepareStatement(sqlMedicoParceiro);
                 stmtMedicoParceiro.setInt(1, idPessoa);
                 stmtMedicoParceiro.setString(2, medicoParceiro.getCrm());
@@ -54,6 +54,42 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoteException("Erro ao inserir médico parceiro: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+    }
+
+    @Override
+    public void atualizarMedicoParceiro(MedicoParceiro medicoParceiro) throws RemoteException {
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sqlPessoa = "UPDATE pessoa SET nome = ?, endereco = ?, cpf = ?, telefone = ? WHERE id = ?";
+                PreparedStatement stmtPessoa = conexao.prepareStatement(sqlPessoa);
+                stmtPessoa.setString(1, medicoParceiro.getNome());
+                stmtPessoa.setString(2, medicoParceiro.getEndereco());
+                stmtPessoa.setString(3, medicoParceiro.getCpf());
+                stmtPessoa.setString(4, medicoParceiro.getTelefone());
+                stmtPessoa.setInt(5, medicoParceiro.getId());
+                stmtPessoa.executeUpdate();
+
+                String sqlMedicoParceiro = "UPDATE medico_parceiro SET crm = ?, estado = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
+                PreparedStatement stmtMedicoParceiro = conexao.prepareStatement(sqlMedicoParceiro);
+                stmtMedicoParceiro.setString(1, medicoParceiro.getCrm());
+                stmtMedicoParceiro.setString(2, medicoParceiro.getEstado());
+                stmtMedicoParceiro.setBoolean(3, medicoParceiro.isHabilitado());
+                stmtMedicoParceiro.setInt(4, medicoParceiro.getId());
+                stmtMedicoParceiro.executeUpdate();
+
+                System.out.println("Médico Parceiro atualizado com sucesso!");
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao atualizar médico parceiro: " + e.getMessage());
         } finally {
             Conexao.desconectar();
         }

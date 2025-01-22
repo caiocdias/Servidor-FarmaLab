@@ -7,4 +7,6 @@ import model.MedicoParceiro;
 public interface InterfaceMedicoParceiro extends Remote {
 
     void inserirMedicoParceiro(MedicoParceiro medicoParceiro) throws RemoteException;
+
+    void atualizarMedicoParceiro(MedicoParceiro medicoParceiro) throws RemoteException;
 }
