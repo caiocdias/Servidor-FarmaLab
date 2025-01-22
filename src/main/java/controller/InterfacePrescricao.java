@@ -7,4 +7,6 @@ import model.Prescricao;
 public interface InterfacePrescricao extends Remote {
 
     void inserirPrescricao(Prescricao prescricao) throws RemoteException;
+
+    void atualizarPrescricao(Prescricao prescricao) throws RemoteException;
 }
