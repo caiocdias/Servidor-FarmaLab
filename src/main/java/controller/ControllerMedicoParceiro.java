@@ -122,4 +122,60 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
             Conexao.desconectar();
         }
     }
+
+    @Override
+    public MedicoParceiro obterMedicoParceiro(Integer id, String cpf) throws RemoteException {
+        MedicoParceiro medicoParceiro = null;
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, "
+                        + "m.crm, m.estado, m.habilitado, m.created_at, m.updated_at "
+                        + "FROM pessoa p INNER JOIN medico_parceiro m ON p.id = m.id_pessoa WHERE 1=1";
+                if (id != null) {
+                    sql += " AND p.id = ?";
+                }
+                if (cpf != null && !cpf.isEmpty()) {
+                    sql += " AND p.cpf = ?";
+                }
+
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+
+                int paramIndex = 1;
+                if (id != null) {
+                    stmt.setInt(paramIndex++, id);
+                }
+                if (cpf != null && !cpf.isEmpty()) {
+                    stmt.setString(paramIndex++, cpf);
+                }
+
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    medicoParceiro = new MedicoParceiro(
+                            rs.getInt("id"),
+                            rs.getString("nome"),
+                            rs.getString("cpf"),
+                            rs.getString("endereco"),
+                            rs.getString("telefone"),
+                            rs.getString("crm"),
+                            rs.getString("estado"),
+                            rs.getBoolean("habilitado"),
+                            rs.getTimestamp("created_at"),
+                            rs.getTimestamp("updated_at")
+                    );
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao pesquisar médico parceiro: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return medicoParceiro;
+    }
 }

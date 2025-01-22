@@ -11,4 +11,6 @@ public interface InterfaceMedicoParceiro extends Remote {
     void atualizarMedicoParceiro(MedicoParceiro medicoParceiro) throws RemoteException;
 
     void desativarMedicoParceiro(int id) throws RemoteException;
+
+    MedicoParceiro obterMedicoParceiro(Integer id, String cpf) throws RemoteException;
 }
