@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import model.Cliente;
 import util.Conexao;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ControllerCliente extends UnicastRemoteObject implements InterfaceCliente {
 
@@ -167,5 +169,46 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
         Conexao.desconectar();
     }
     return cliente;
-}
+    }
+    
+    @Override
+    public List<Cliente> buscarClientesPorNome(String nome) throws RemoteException {
+        List<Cliente> clientes = new ArrayList<>();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at " +
+                             "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa " +
+                             "WHERE p.nome LIKE ?";
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setString(1, "%" + nome + "%");
+
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    Cliente cliente = new Cliente(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("cpf"),
+                        rs.getString("endereco"),
+                        rs.getString("telefone"),
+                        rs.getBoolean("habilitado"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at")
+                    );
+                    clientes.add(cliente);
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao buscar clientes por nome: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return clientes;
+    }
 }
