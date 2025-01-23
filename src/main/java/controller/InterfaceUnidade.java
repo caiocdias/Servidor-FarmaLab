@@ -4,6 +4,7 @@
  */
 package controller;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import model.Unidade;
@@ -12,7 +13,7 @@ import model.Unidade;
  *
  * @author Rafae
  */
-public interface InterfaceUnidade {
+public interface InterfaceUnidade extends Remote{
     void inserirUnidade(Unidade unidade) throws RemoteException;
 
     void atualizarUnidade(Unidade unidade) throws RemoteException;
