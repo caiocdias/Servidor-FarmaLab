@@ -23,7 +23,7 @@ import util.Conexao;
  */
 public class ControllerOrcamento extends UnicastRemoteObject implements InterfaceOrcamento{
     
-    ControllerOrcamento() throws RemoteException{
+    public ControllerOrcamento() throws RemoteException{
         super();
     }
 
@@ -71,7 +71,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                 if (resultado.next()) {
                     ControllerCliente controllerCliente = new ControllerCliente();
                     ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
-                    //ControllerUnidade controllerUnidade = new ControllerUnidade();
+                    ControllerUnidade controllerUnidade = new ControllerUnidade();
                     
                     orcamento.setId(resultado.getInt("id"));
                     orcamento.setDescricao(resultado.getString("descricao"));
@@ -83,7 +83,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
 
                     orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
                     orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
-                    //orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id"), null));
+                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
 
                      return orcamento;
                 } else {
@@ -133,14 +133,20 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
     public void desativarOrcamento(int id) throws RemoteException {
         try{
             Conexao.conectar();
-            String sql = "UPDATE orcamento SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
-            PreparedStatement sentenca = Conexao.con.prepareStatement(sql);
-            sentenca.setInt(1, id);
-            int linhasAfetadas = sentenca.executeUpdate();
-            if (linhasAfetadas > 0) {
-                System.out.println("Orçamento desabilitada com sucesso.");
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "UPDATE orcamento SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                sentenca.setInt(1, id);
+                int linhasAfetadas = sentenca.executeUpdate();
+                if (linhasAfetadas > 0) {
+                    System.out.println("Orçamento desabilitada com sucesso.");
+                } else {
+                    System.out.println("Nenhum orçamento foi encontrado para o ID informado.");
+                }
             } else {
-                System.out.println("Nenhum orçamento foi encontrado para o ID informado.");
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
         }catch(SQLException e){
             throw new RemoteException("Erro ao remover orçamento: " + e.getMessage());
@@ -163,7 +169,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                 while (resultado.next()) {
                     ControllerCliente controllerCliente = new ControllerCliente();
                     ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
-                    //ControllerUnidade controllerUnidade = new ControllerUnidade();
+                    ControllerUnidade controllerUnidade = new ControllerUnidade();
                     Orcamento orcamento = new Orcamento();
                     
                     orcamento.setId(resultado.getInt("id"));
@@ -176,7 +182,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
 
                     orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
                     orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
-                    //orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id"), null));
+                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
                     
                     orcamentos.add(orcamento);
                 }

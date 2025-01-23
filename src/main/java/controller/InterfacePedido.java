@@ -15,11 +15,11 @@ import model.Pedido;
  */
 
 public interface InterfacePedido extends Remote{
-    void inserirPedido(Pedido p) throws RemoteException;
+    void inserirPedido(Pedido pedido) throws RemoteException;
     Pedido obterPedido(int id) throws RemoteException;
-    void atualizarPedido(Pedido p) throws RemoteException;
+    void atualizarPedido(Pedido pedido) throws RemoteException;
     void desativarPedido(int id) throws RemoteException;
-    List<Pedido> buscarPedidoPorNome(int clienteId) throws RemoteException;
+    List<Pedido> buscarPedidosPorCliente(int clienteId) throws RemoteException;
     double calcularDescontoInsumo(Pedido p) throws RemoteException;
     double calcularDescontoMedico(Pedido p) throws RemoteException;
 }

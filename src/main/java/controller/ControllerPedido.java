@@ -8,9 +8,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import model.Pedido;
+import model.enums.StatusPedido;
 import util.Conexao;
 
 /**
@@ -24,7 +27,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
     }
     
     @Override
-    public void inserirPedido(Pedido p) throws RemoteException {
+    public void inserirPedido(Pedido pedido) throws RemoteException {
         try {
             Conexao.conectar();
             Connection conexao = Conexao.con;
@@ -32,17 +35,17 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             if (conexao != null) {
                 String sql = "INSERT INTO pedido (id_cliente, id_funcionario, status, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
-                sentenca.setInt(1, p.getCliente().getId());
-                sentenca.setInt(2, p.getFuncionario().getId());
-                sentenca.setString(3, p.getStatus_pedido().name());
-                sentenca.setBoolean(4, p.isHabilitado());
-                sentenca.setBoolean(5, p.isPronta_entrega());
+                sentenca.setInt(1, pedido.getCliente().getId());
+                sentenca.setInt(2, pedido.getFuncionario().getId());
+                sentenca.setString(3, pedido.getStatus().name());
+                sentenca.setBoolean(4, pedido.isHabilitado());
+                sentenca.setBoolean(5, pedido.isPronta_entrega());
                 sentenca.execute();
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar o Orçamento: " + e.getMessage());
+            System.out.println("Erro ao cadastrar o Pedido: " + e.getMessage());
         } finally {
             Conexao.desconectar();
         }
@@ -50,31 +53,109 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
 
     @Override
     public Pedido obterPedido(int id) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Pedido pedido = null;
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT * FROM pedido WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                sentenca.setInt(1, id);
+                ResultSet resultado = sentenca.executeQuery();
+
+                if (resultado.next()) {
+                    ControllerCliente controllerCliente = new ControllerCliente();
+                    ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
+                    
+                    pedido.setId(resultado.getInt("id"));
+                    pedido.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
+                    pedido.setHabilitado(resultado.getBoolean("habilitado"));
+
+                    String statusString = resultado.getString("status");
+                    pedido.setStatus(StatusPedido.valueOf(statusString));
+
+                    pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
+                    pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
+
+                     return pedido;
+                } else {
+                    System.out.println("Pedido com ID " + id + " não encontrado.");
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (SQLException /*| NotBoundException | MalformedURLException*/ e) {
+            System.out.println("Erro ao obter o Pedido: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return pedido;
     }
 
     @Override
-    public void atualizarPedido(Pedido p) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void atualizarPedido(Pedido pedido) throws RemoteException {
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+            if (conexao != null) {
+                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, status = ?, habilitado = ?, pronta_entrega = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                sentenca.setInt(1, pedido.getCliente().getId());
+                sentenca.setInt(2, pedido.getFuncionario().getId());
+                sentenca.setString(3, pedido.getStatus().name());
+                sentenca.setBoolean(4, pedido.isHabilitado());
+                sentenca.setBoolean(5, pedido.isPronta_entrega());
+                sentenca.setInt(6, pedido.getId());
+                sentenca.executeUpdate();
+
+                System.out.println("Pedido atualizado com sucesso!");
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (SQLException e) {
+            throw new RemoteException("Erro ao atualizar pedido: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
     }
 
     @Override
     public void desativarPedido(int id) throws RemoteException {
+        try{
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "UPDATE pedido SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                sentenca.setInt(1, id);
+                int linhasAfetadas = sentenca.executeUpdate();
+                if (linhasAfetadas > 0) {
+                    System.out.println("Pedido desabilitada com sucesso.");
+                } else {
+                    System.out.println("Nenhum pedido foi encontrado para o ID informado.");
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        }catch(SQLException e){
+            throw new RemoteException("Erro ao remover pedido: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Pedido> buscarPedidosPorCliente(int clienteId) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public List<Pedido> buscarPedidoPorNome(int clienteId) throws RemoteException {
+    public double calcularDescontoInsumo(Pedido pedido) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public double calcularDescontoInsumo(Pedido p) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double calcularDescontoMedico(Pedido p) throws RemoteException {
+    public double calcularDescontoMedico(Pedido pedido) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

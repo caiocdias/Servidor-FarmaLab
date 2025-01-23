@@ -14,7 +14,7 @@ import model.enums.StatusPedido;
  */
 public class Pedido implements Serializable {
     private int id;
-    private StatusPedido status_pedido;
+    private StatusPedido status;
     private boolean habilitado;
     private boolean pronta_entrega;
     private Timestamp created_at;
@@ -26,10 +26,11 @@ public class Pedido implements Serializable {
         
     }
     
-    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario) {
+    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, boolean pronta_entrega, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario) {
         setId(id);
-        setStatus_pedido(status_pedido);
+        setStatus(status);
         setHabilitado(habilitado);
+        setPronta_entrega(pronta_entrega);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
         setCliente(cliente);
@@ -89,12 +90,12 @@ public class Pedido implements Serializable {
         }
     }
 
-    public StatusPedido getStatus_pedido() {
-        return status_pedido;
+    public StatusPedido getStatus() {
+        return status;
     }
 
-    public void setStatus_pedido(StatusPedido status_pedido) {
-        this.status_pedido = status_pedido;
+    public void setStatus(StatusPedido status) {
+        this.status = status;
     }
 
     public boolean isPronta_entrega() {

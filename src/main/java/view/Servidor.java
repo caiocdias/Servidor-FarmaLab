@@ -5,10 +5,14 @@ import java.rmi.registry.LocateRegistry;
 import controller.ControllerCliente;
 import controller.ControllerFuncionario;
 import controller.ControllerMedicoParceiro;
+import controller.ControllerNotaFiscal;
+import controller.ControllerOrcamento;
 import controller.ControllerPrescricao;
 import controller.InterfaceCliente;
 import controller.InterfaceFuncionario;
 import controller.InterfaceMedicoParceiro;
+import controller.InterfaceNotaFiscal;
+import controller.InterfaceOrcamento;
 import controller.InterfacePrescricao;
 
 public class Servidor {
@@ -32,6 +36,14 @@ public class Servidor {
             InterfacePrescricao prescricaoStub = new ControllerPrescricao();
             Naming.rebind("//localhost/Prescricao", prescricaoStub);
             System.out.println("Serviço de Prescricao registrado com sucesso!");
+            
+            InterfaceNotaFiscal notaFiscalStub = new ControllerNotaFiscal();
+            Naming.rebind("//localhost/NotaFiscal", notaFiscalStub);
+            System.out.println("Serviço de Nota Fiscal registrado com sucesso!");
+            
+            InterfaceOrcamento OrcamentoStub = new ControllerOrcamento();
+            Naming.rebind("//localhost/Orcamento", OrcamentoStub);
+            System.out.println("Serviço de Orcamento registrado com sucesso!");
 
             System.out.println("Servidor RMI pronto e aguardando conexões...");
         } catch (Exception e) {
