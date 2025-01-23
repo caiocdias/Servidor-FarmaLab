@@ -19,7 +19,6 @@ public class NotaFiscal implements Serializable{
     private Timestamp data_emissao;
     private float valor_total;
     private boolean habilitado;
-    private List<Tributo> tributo = new ArrayList<>();
     private Timestamp created_at;
     private Timestamp updated_at;
     
@@ -28,13 +27,12 @@ public class NotaFiscal implements Serializable{
     
     }
     
-    public NotaFiscal(int id, int num_nota, Timestamp data_emissao, float valor_total, boolean habilitado, List<Tributo> tributo, Timestamp created_at, Timestamp updated_at){
+    public NotaFiscal(int id, int num_nota, Timestamp data_emissao, float valor_total, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
         setNum_nota(num_nota);
         setData_emissao(data_emissao);
         setValor_total(valor_total);
         setHabilitado(habilitado);
-        setTributo(tributo);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
         
@@ -95,14 +93,6 @@ public class NotaFiscal implements Serializable{
 
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
-    }
-
-    public List<Tributo> getTributo() {
-        return tributo;
-    }
-
-    public void setTributo(List<Tributo> tributo) {
-        this.tributo = tributo;
     }
     
     
