@@ -13,6 +13,7 @@ import java.sql.Timestamp;
  */
 public class Insumo implements Serializable {
     private int id;
+    private String nome;
     private float quant;
     private Timestamp data_validade;
     private boolean habilitado;
@@ -25,8 +26,9 @@ public class Insumo implements Serializable {
         
     }
     
-    public Insumo(int id, float quant, Timestamp data_validade, boolean habilitado, Estoque estoque, TipoInsumo tipo_insumo, Timestamp created_at, Timestamp updated_at) {
+    public Insumo(int id, String nome, float quant, Timestamp data_validade, boolean habilitado, Estoque estoque, TipoInsumo tipo_insumo, Timestamp created_at, Timestamp updated_at){
         setId(id);
+        setNome(nome);
         setQuant(quant);
         setData_validade(data_validade);
         setHabilitado(habilitado);
@@ -38,6 +40,14 @@ public class Insumo implements Serializable {
     
     public int getId() {
         return id;
+    }
+
+    public String getNome(){
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public void setId(int id) {

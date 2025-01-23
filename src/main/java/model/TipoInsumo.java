@@ -90,10 +90,5 @@ public class TipoInsumo implements Serializable{
 
     public void setTipo_produtos(List<TipoProduto> tipo_produtos) {
         this.tipo_produtos = tipo_produtos;
-    }
-    
-    
-    
-    
-    
+    } 
 }
