@@ -13,6 +13,7 @@ import java.sql.Timestamp;
  */
 public class Unidade implements Serializable {
     private int id;
+    private String nome;
     private String cep;
     private String cidade;
     private String bairro;
@@ -27,8 +28,9 @@ public class Unidade implements Serializable {
         
     }
     
-    public Unidade(int id, String cep, String cidade, String bairro, String rua, String complemento, String estado, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+    public Unidade(int id, String nome, String cep, String cidade, String bairro, String rua, String complemento, String estado, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
+        setNome(nome);
         setCep(cep);
         setCidade(cidade);
         setBairro(bairro);
@@ -118,5 +120,13 @@ public class Unidade implements Serializable {
 
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 }

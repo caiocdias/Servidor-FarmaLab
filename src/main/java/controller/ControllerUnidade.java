@@ -32,15 +32,16 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                 Connection conexao = Conexao.con;
 
                 if (conexao != null) {
-                    String sqlUnidade = "INSERT INTO unidade (cep, cidade, bairro, rua, complemento, estado, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    String sqlUnidade = "INSERT INTO unidade (nome, cep, cidade, bairro, rua, complemento, estado, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement stmtUnidade = conexao.prepareStatement(sqlUnidade, Statement.RETURN_GENERATED_KEYS);
-                    stmtUnidade.setString(1, unidade.getCep());
-                    stmtUnidade.setString(2, unidade.getCidade());
-                    stmtUnidade.setString(3, unidade.getBairro());
-                    stmtUnidade.setString(4, unidade.getRua());
-                    stmtUnidade.setString(5, unidade.getComplemento());
-                    stmtUnidade.setString(6, unidade.getEstado());
-                    stmtUnidade.setBoolean(7, unidade.isHabilitado());
+                    stmtUnidade.setString(1, unidade.getNome());
+                    stmtUnidade.setString(2, unidade.getCep());
+                    stmtUnidade.setString(3, unidade.getCidade());
+                    stmtUnidade.setString(4, unidade.getBairro());
+                    stmtUnidade.setString(5, unidade.getRua());
+                    stmtUnidade.setString(6, unidade.getComplemento());
+                    stmtUnidade.setString(7, unidade.getEstado());
+                    stmtUnidade.setBoolean(8, unidade.isHabilitado());
                     stmtUnidade.executeUpdate();
 
                     System.out.println("Unidade inserida com sucesso!");
@@ -62,15 +63,16 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sqlUnidade = "UPDATE unidade SET cep = ?, cidade = ?, bairro = ?, rua = ?, complemento = ?, estado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sqlUnidade = "UPDATE unidade SET nome = ?, cep = ?, cidade = ?, bairro = ?, rua = ?, complemento = ?, estado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmtUnidade = conexao.prepareStatement(sqlUnidade, Statement.RETURN_GENERATED_KEYS);
-                    stmtUnidade.setString(1, unidade.getCep());
-                    stmtUnidade.setString(2, unidade.getCidade());
-                    stmtUnidade.setString(3, unidade.getBairro());
-                    stmtUnidade.setString(4, unidade.getRua());
-                    stmtUnidade.setString(5, unidade.getComplemento());
-                    stmtUnidade.setString(6, unidade.getEstado());
-                    stmtUnidade.setInt(6, unidade.getId());
+                    stmtUnidade.setString(1, unidade.getNome());
+                    stmtUnidade.setString(2, unidade.getCep());
+                    stmtUnidade.setString(3, unidade.getCidade());
+                    stmtUnidade.setString(4, unidade.getBairro());
+                    stmtUnidade.setString(5, unidade.getRua());
+                    stmtUnidade.setString(6, unidade.getComplemento());
+                    stmtUnidade.setString(7, unidade.getEstado());
+                    stmtUnidade.setInt(8, unidade.getId());
                     stmtUnidade.executeUpdate();
 
                 System.out.println("Unidade atualizada com sucesso!");
@@ -130,6 +132,7 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                 if (rs.next()) {
                     unidade = new Unidade(
                             rs.getInt("id"),
+                            rs.getString("nome"),
                             rs.getString("cep"),
                             rs.getString("cidade"),
                             rs.getString("bairro"),
@@ -170,6 +173,7 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                 while (rs.next()) {
                     Unidade unidade = new Unidade(
                             rs.getInt("id"),
+                            rs.getString("nome"),
                             rs.getString("cep"),
                             rs.getString("cidade"),
                             rs.getString("bairro"),
