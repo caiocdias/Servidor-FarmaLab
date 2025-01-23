@@ -19,13 +19,13 @@ import util.Conexao;
  *
  * @author Rafae
  */
-public class ControllerUnidade extends UnicastRemoteObject implements InterfaceUnidade {
+public class ControllerUnidade extends UnicastRemoteObject implements InterfaceUnidade{
     public ControllerUnidade() throws RemoteException {
         super();
     }
 
     @Override
-    public void inserirUnidade(Unidade unidade) throws RemoteException {
+    public void inserirUnidade(Unidade unidade) throws RemoteException{
             
             try{
                 Conexao.conectar();
