@@ -14,7 +14,7 @@ import model.NotaFiscal;
  */
 
 public interface InterfaceNotaFiscal extends Remote{
-    void cadastrarNotaFiscal(NotaFiscal nf) throws RemoteException;
+    void inserirNotaFiscal(NotaFiscal nf) throws RemoteException;
     NotaFiscal obterNotaFiscal(int id) throws RemoteException;
     void atualizarNotaFiscal(NotaFiscal nf) throws RemoteException;
     void desativarNotaFiscal(int id) throws RemoteException;

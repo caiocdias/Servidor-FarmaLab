@@ -24,14 +24,14 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
     }
     
     @Override
-    public void cadastrarNotaFiscal(NotaFiscal nf) throws RemoteException {
+    public void inserirNotaFiscal(NotaFiscal nf) throws RemoteException {
         try{
             Conexao.conectar();
             Connection conexao = Conexao.con;
             
             if (conexao != null) {
                 String sqlNotaFiscal = "INSERT INTO nota_fiscal (num_nota, data_emissao, valor_total, habilitado) VALUES (?, ?, ?, ?)";
-                PreparedStatement sentencaNotaFiscal = Conexao.con.prepareStatement(sqlNotaFiscal);
+                PreparedStatement sentencaNotaFiscal = conexao.prepareStatement(sqlNotaFiscal);
                 sentencaNotaFiscal.setInt(1, nf.getNum_nota());
                 sentencaNotaFiscal.setTimestamp(2, nf.getData_emissao());
                 sentencaNotaFiscal.setFloat(3, nf.getValor_total());
@@ -57,7 +57,7 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
             Connection conexao = Conexao.con;
             
             if (conexao != null) {
-                PreparedStatement sentenca = Conexao.con.prepareStatement(sql);
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, id);
                 ResultSet resultado = sentenca.executeQuery();
 
@@ -91,11 +91,12 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
             
             if (conexao != null) {
                 String sql = "UPDATE nota_fiscal SET num_nota = ?, data_emissao = ?, valor_total = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
-                PreparedStatement sentenca = Conexao.con.prepareStatement(sql);
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, nf.getNum_nota());
                 sentenca.setTimestamp(2, nf.getData_emissao());
                 sentenca.setFloat(3, nf.getValor_total());
                 sentenca.setBoolean(4, nf.isHabilitado());
+                sentenca.setInt(5, nf.getId());
                 sentenca.executeUpdate();
 
                 System.out.println("Nota Fiscal atualizado com sucesso!");
@@ -117,7 +118,7 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
             
             if (conexao != null) {
                 String sql = "UPDATE nota_fiscal SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
-                PreparedStatement sentenca = Conexao.con.prepareStatement(sql);
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, id);
                 int linhasAfetadas = sentenca.executeUpdate();
                 
