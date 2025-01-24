@@ -83,7 +83,7 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sqlEstoque = "UPDATE estoque SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
+                String sqlEstoque = "UPDATE estoque SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sqlEstoque);
                 stmt.setInt(1, id);
                 int linhasAfetadas = stmt.executeUpdate();
