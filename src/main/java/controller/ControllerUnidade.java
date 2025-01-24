@@ -19,7 +19,8 @@ import util.Conexao;
  *
  * @author Rafae
  */
-public class ControllerUnidade extends UnicastRemoteObject implements InterfaceUnidade{
+public class ControllerUnidade extends UnicastRemoteObject implements InterfaceUnidade {
+    
     public ControllerUnidade() throws RemoteException {
         super();
     }
