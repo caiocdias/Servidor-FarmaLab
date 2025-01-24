@@ -24,7 +24,7 @@ public class Tributo implements Serializable{
         
     }
     
-    public Tributo(int id, String estado, String nome, String nome_imposto, float porcentagem, boolean habilitado){
+    public Tributo(int id, String estado, String nome_imposto, float porcentagem, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
         setEstado(estado);
         setNome_imposto(nome_imposto);
