@@ -86,7 +86,7 @@ public class ControllerTributo extends UnicastRemoteObject implements InterfaceT
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sqlTributo = "UPDATE tributo SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
+                String sqlTributo = "UPDATE tributo SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sqlTributo);
                 stmt.setInt(1, id);
                 int linhasAfetadas = stmt.executeUpdate();

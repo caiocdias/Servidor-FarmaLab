@@ -95,8 +95,8 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sqlCliente = "UPDATE unidade SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id_pessoa = ?";
-                PreparedStatement stmt = conexao.prepareStatement(sqlCliente);
+                String sqlVenda = "UPDATE unidade SET habilitado = false, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sqlVenda);
                 stmt.setInt(1, id);
                 int linhasAfetadas = stmt.executeUpdate();
 

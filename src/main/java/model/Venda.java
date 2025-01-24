@@ -15,6 +15,7 @@ public class Venda implements Serializable {
     private Unidade unidade;
     private Pedido pedido;
     private NotaFiscal nota_fiscal;
+    private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
 
@@ -22,11 +23,12 @@ public class Venda implements Serializable {
         
     }
     
-    public Venda(int id, Unidade unidade, NotaFiscal nota_fiscal, Pedido pedido, Timestamp created_at, Timestamp updated_at) {
+    public Venda(int id, Unidade unidade, NotaFiscal nota_fiscal, Pedido pedido,Boolean habilitado, Timestamp created_at, Timestamp updated_at) {
         setId(id);
         setUnidade(unidade);
         setNota_fiscal(nota_fiscal);
         setPedido(pedido);
+        setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
     }
@@ -77,5 +79,13 @@ public class Venda implements Serializable {
 
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
     }
 }
