@@ -10,9 +10,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import model.Insumo;
+import model.MedicoParceiro;
 import model.Pedido;
+import model.Prescricao;
 import model.enums.StatusPedido;
 import util.Conexao;
 
@@ -33,13 +37,15 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, status, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, id_prescricao, status, habilitado, pronta_entrega, valor_total_base) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, pedido.getCliente().getId());
                 sentenca.setInt(2, pedido.getFuncionario().getId());
-                sentenca.setString(3, pedido.getStatus().name());
-                sentenca.setBoolean(4, pedido.isHabilitado());
-                sentenca.setBoolean(5, pedido.isPronta_entrega());
+                sentenca.setInt(3, pedido.getPrescricao().getId());
+                sentenca.setString(4, pedido.getStatus().name());
+                sentenca.setBoolean(5, pedido.isHabilitado());
+                sentenca.setBoolean(6, pedido.isPronta_entrega());
+                sentenca.setFloat(8, pedido.getValorTotalBase());
                 sentenca.execute();
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
@@ -67,16 +73,21 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 if (resultado.next()) {
                     ControllerCliente controllerCliente = new ControllerCliente();
                     ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
+                    ControllerPrescricao controllerPrescricao = new ControllerPrescricao();
                     
                     pedido.setId(resultado.getInt("id"));
                     pedido.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
                     pedido.setHabilitado(resultado.getBoolean("habilitado"));
-
+                    pedido.setDescontoTotal(resultado.getFloat("desconto_total"));
+                    pedido.setValorTotalBase(resultado.getFloat("valor_total_base"));
+                    pedido.setValorFinal(resultado.getFloat("valor_final"));
+                    
                     String statusString = resultado.getString("status");
                     pedido.setStatus(StatusPedido.valueOf(statusString));
 
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
+                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
 
                      return pedido;
                 } else {
@@ -85,7 +96,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
-        } catch (SQLException /*| NotBoundException | MalformedURLException*/ e) {
+        } catch (SQLException e) {
             System.out.println("Erro ao obter o Pedido: " + e.getMessage());
         } finally {
             Conexao.desconectar();
@@ -99,14 +110,16 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Conexao.conectar();
             Connection conexao = Conexao.con;
             if (conexao != null) {
-                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, status = ?, habilitado = ?, pronta_entrega = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
+                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, id_prescricao = ?, status = ?, habilitado = ?, pronta_entrega = ?, valor_total_base = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, pedido.getCliente().getId());
                 sentenca.setInt(2, pedido.getFuncionario().getId());
-                sentenca.setString(3, pedido.getStatus().name());
-                sentenca.setBoolean(4, pedido.isHabilitado());
-                sentenca.setBoolean(5, pedido.isPronta_entrega());
-                sentenca.setInt(6, pedido.getId());
+                sentenca.setInt(3, pedido.getPrescricao().getId());
+                sentenca.setString(4, pedido.getStatus().name());
+                sentenca.setBoolean(5, pedido.isHabilitado());
+                sentenca.setBoolean(6, pedido.isPronta_entrega());
+                sentenca.setFloat(8, pedido.getValorTotalBase());
+                sentenca.setInt(10, pedido.getId());
                 sentenca.executeUpdate();
 
                 System.out.println("Pedido atualizado com sucesso!");
@@ -156,19 +169,24 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, clienteId);
                 ResultSet resultado = sentenca.executeQuery();
-
+                
+                ControllerCliente controllerCliente = new ControllerCliente();
+                ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
+                ControllerPrescricao controllerPrescricao = new ControllerPrescricao();
                 while (resultado.next()) {
                     Pedido pedido = new Pedido();
-                    ControllerCliente controllerCliente = new ControllerCliente();
-                    ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
 
                     pedido.setId(resultado.getInt("id"));
                     pedido.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
                     pedido.setHabilitado(resultado.getBoolean("habilitado"));
                     pedido.setStatus(StatusPedido.valueOf(resultado.getString("status")));
+                    pedido.setDescontoTotal(resultado.getFloat("desconto_total"));
+                    pedido.setValorTotalBase(resultado.getFloat("valor_total_base"));
+                    pedido.setValorFinal(resultado.getFloat("valor_final"));
 
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
+                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
 
                     pedidos.add(pedido);
                 }
@@ -183,15 +201,74 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
 
     return pedidos;
     }
+    
+    
 
     @Override
-    public double calcularDescontoInsumo(Pedido pedido) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public float calcularDescontoInsumo(Pedido pedido) throws RemoteException {
+        float descontoInsumo = 0;
+        /*
+        try {
+            ControllerInsumo controllerInsumo = new ControllerInsumo();
+            Insumo insumo = controllerInsumo.obterInsumos(pedido); //terminar de desenvolver essa parte ainda, obter insumos de acordo com o pedido, talvez tem q setar um for (dependendo de quando insumos tem pra vencer)
+            Timestamp dataValidade = insumo.getData_validade();
+            long diasRestantes = (dataValidade.getTime() - System.currentTimeMillis()) / (1000 * 60 * 60 * 24);
+            if (diasRestantes <= 7) {
+                descontoInsumo = pedido.getValorTotalBase() * 0.10f; // 10% de desconto
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erro ao calcular desconto para insumos: " + e.getMessage());
+        } 
+        */
+    return descontoInsumo;
+    }
+
+
+    @Override
+    public float calcularDescontoMedico(Pedido pedido) throws RemoteException {
+    float descontoMedico = 0;    
+    try {
+        Prescricao prescricao = pedido.getPrescricao();
+        
+        ControllerMedicoParceiro controllerMedicoParceiro = new ControllerMedicoParceiro();
+        MedicoParceiro medico = controllerMedicoParceiro.obterMedicoParceiro(null, prescricao.getCrm());
+        if(medico != null){
+            descontoMedico = pedido.getValorTotalBase() * 0.05f; // 5% de desconto
+        } 
+    } catch (Exception e) {
+        System.out.println("Erro ao calcular desconto médico: " + e.getMessage());
+    } 
+
+    return descontoMedico;
     }
 
     @Override
-    public double calcularDescontoMedico(Pedido pedido) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public float calcularValorFinal(Pedido pedido) throws RemoteException {
+        float valorFinal = 0;
+        try {
+            pedido.setDescontoTotal(calcularDescontoInsumo(pedido) + calcularDescontoMedico(pedido));
+            ControllerTributo controllerTributo = new ControllerTributo();
+            //float tributos = ControllerTributos.calcularTributos();
+            valorFinal = pedido.getValorTotalBase() -  pedido.getDescontoTotal(); //+ tributos
+            
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "INSERT INTO pedido (desconto_total, valor_final) VALUES (?, ?)";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                sentenca.setFloat(1, pedido.getDescontoTotal());
+                sentenca.setFloat(2, pedido.getValorFinal());
+                sentenca.execute();
+            }else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (RemoteException | SQLException e) {
+            System.out.println("Erro ao calcular valor total: " + e.getMessage());
+        } 
+        
+        return valorFinal;
     }
     
 }

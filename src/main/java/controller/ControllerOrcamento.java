@@ -165,11 +165,11 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setString(1, "%" + nome + "%");
                 ResultSet resultado = sentenca.executeQuery();
-
+                
+                ControllerCliente controllerCliente = new ControllerCliente();
+                ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
+                ControllerUnidade controllerUnidade = new ControllerUnidade();
                 while (resultado.next()) {
-                    ControllerCliente controllerCliente = new ControllerCliente();
-                    ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
-                    ControllerUnidade controllerUnidade = new ControllerUnidade();
                     Orcamento orcamento = new Orcamento();
                     
                     orcamento.setId(resultado.getInt("id"));

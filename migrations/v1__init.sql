@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS tributo_nota_fiscal (
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    nota_fistacal_id INT NOT NULL,
+    nota_fiscal_id INT NOT NULL,
     CONSTRAINT fk_tributo_nota_fiscal_nota_fiscal
         FOREIGN KEY (nota_fistacal_id)
         REFERENCES nota_fiscal(id)
@@ -189,6 +189,9 @@ CREATE TABLE IF NOT EXISTS pedido (
     status VARCHAR(20),
     habilitado BOOLEAN,
     pronta_entrega BOOLEAN,
+    desconto_total FLOAT,
+    valor_total_base FLOAT,
+    valor_final FLOAT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
@@ -203,6 +206,13 @@ CREATE TABLE IF NOT EXISTS pedido (
     CONSTRAINT fk_pedido_funcionario
         FOREIGN KEY (funcionario_id)
         REFERENCES funcionario(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+	
+    prescricao_id INT NOT NULL,
+    CONSTRAINT fk_pedido_prescricao
+        FOREIGN KEY (prescricao_id)
+        REFERENCES prescricao(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );

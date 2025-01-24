@@ -20,6 +20,7 @@ public interface InterfacePedido extends Remote{
     void atualizarPedido(Pedido pedido) throws RemoteException;
     void desativarPedido(int id) throws RemoteException;
     List<Pedido> buscarPedidosPorCliente(int clienteId) throws RemoteException;
-    double calcularDescontoInsumo(Pedido p) throws RemoteException;
-    double calcularDescontoMedico(Pedido p) throws RemoteException;
+    float calcularDescontoInsumo(Pedido pedido) throws RemoteException;
+    float calcularDescontoMedico(Pedido pedido) throws RemoteException;
+    float calcularValorFinal(Pedido pedido) throws RemoteException;
 }
