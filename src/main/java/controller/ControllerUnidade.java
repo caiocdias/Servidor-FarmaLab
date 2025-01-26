@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import model.Tributo;
 import model.Unidade;
 import util.Conexao;
 
@@ -44,7 +45,21 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                     stmtUnidade.setString(7, unidade.getEstado());
                     stmtUnidade.setBoolean(8, unidade.isHabilitado());
                     stmtUnidade.executeUpdate();
+                    
+                ResultSet rs = stmtUnidade.getGeneratedKeys();
+                int idUnidade = 0;
+                if (rs.next()) {
+                    idUnidade = rs.getInt(1);
+                }
 
+                String sqlTributoInidade = "INSERT INTO tributo_unidade (id_tributo, id_unidade) VALUES (?, ?)";
+                PreparedStatement stmtTributoUnidade = conexao.prepareStatement(sqlTributoInidade);
+                
+                for (Tributo tributo : unidade.getTributos()) {
+                    stmtTributoUnidade.setInt(1, tributo.getId());
+                    stmtTributoUnidade.setInt(2, idUnidade); 
+                    stmtTributoUnidade.addBatch();
+                }
                     System.out.println("Unidade inserida com sucesso!");
                 } else {
                     System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
@@ -129,7 +144,13 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, id);
                 ResultSet rs = stmt.executeQuery();
-
+                
+                List<Tributo> tributos = new ArrayList();
+                //[to-do]: armazenar os tributos em tributos
+                    //for(){
+                    
+                    //}
+                
                 if (rs.next()) {
                     unidade = new Unidade(
                             rs.getInt("id"),
@@ -142,7 +163,8 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                             rs.getString("estado"),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),
-                            rs.getTimestamp("updated_at")
+                            rs.getTimestamp("updated_at"),
+                            tributos
                     );
                 }
             } else {
@@ -170,8 +192,9 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                 stmt.setString(1, "%" + nome + "%");
 
                 ResultSet rs = stmt.executeQuery();
-
+                   
                 while (rs.next()) {
+                    List<Tributo> tributos = new ArrayList();
                     Unidade unidade = new Unidade(
                             rs.getInt("id"),
                             rs.getString("nome"),
@@ -183,7 +206,8 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                             rs.getString("estado"),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),
-                            rs.getTimestamp("updated_at")
+                            rs.getTimestamp("updated_at"),
+                            tributos
                     );
                     unidades.add(unidade);
                 }

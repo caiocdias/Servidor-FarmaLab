@@ -17,7 +17,9 @@ public interface InterfaceTipoInsumo extends Remote {
 
     void desativarTipoInsumo(int id) throws RemoteException;
 
-    TipoInsumo obterTipoInsumo(Integer id) throws RemoteException;
+    TipoInsumo obterTipoInsumo(int id) throws RemoteException;
+    
+    List<TipoInsumo> obterTipoInsumo(List<Integer> ids) throws RemoteException;
 
     List<TipoInsumo> buscarTipoInsumoPorNome(String nome) throws RemoteException;
 }

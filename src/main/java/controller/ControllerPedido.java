@@ -37,14 +37,15 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, id_prescricao, status, habilitado, pronta_entrega, valor_total_base) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, id_prescricao,id_unidade, status, habilitado, pronta_entrega, valor_total_base) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, pedido.getCliente().getId());
                 sentenca.setInt(2, pedido.getFuncionario().getId());
                 sentenca.setInt(3, pedido.getPrescricao().getId());
-                sentenca.setString(4, pedido.getStatus().name());
-                sentenca.setBoolean(5, pedido.isHabilitado());
-                sentenca.setBoolean(6, pedido.isPronta_entrega());
+                sentenca.setInt(4, pedido.getUnidade().getId());
+                sentenca.setString(5, pedido.getStatus().name());
+                sentenca.setBoolean(6, pedido.isHabilitado());
+                sentenca.setBoolean(7, pedido.isPronta_entrega());
                 sentenca.setFloat(8, pedido.getValorTotalBase());
                 sentenca.execute();
             } else {
@@ -74,6 +75,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     ControllerCliente controllerCliente = new ControllerCliente();
                     ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
                     ControllerPrescricao controllerPrescricao = new ControllerPrescricao();
+                    ControllerUnidade controllerUnidade = new ControllerUnidade();
                     
                     pedido.setId(resultado.getInt("id"));
                     pedido.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
@@ -88,6 +90,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
                     pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
+                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
 
                      return pedido;
                 } else {
@@ -110,16 +113,17 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Conexao.conectar();
             Connection conexao = Conexao.con;
             if (conexao != null) {
-                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, id_prescricao = ?, status = ?, habilitado = ?, pronta_entrega = ?, valor_total_base = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
+                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, id_prescricao = ?,id_unidade = ?, status = ?, habilitado = ?, pronta_entrega = ?, valor_total_base = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, pedido.getCliente().getId());
                 sentenca.setInt(2, pedido.getFuncionario().getId());
                 sentenca.setInt(3, pedido.getPrescricao().getId());
-                sentenca.setString(4, pedido.getStatus().name());
-                sentenca.setBoolean(5, pedido.isHabilitado());
-                sentenca.setBoolean(6, pedido.isPronta_entrega());
+                sentenca.setInt(4, pedido.getPrescricao().getId());
+                sentenca.setString(5, pedido.getStatus().name());
+                sentenca.setBoolean(6, pedido.isHabilitado());
+                sentenca.setBoolean(7, pedido.isPronta_entrega());
                 sentenca.setFloat(8, pedido.getValorTotalBase());
-                sentenca.setInt(10, pedido.getId());
+                sentenca.setInt(9, pedido.getId());
                 sentenca.executeUpdate();
 
                 System.out.println("Pedido atualizado com sucesso!");
@@ -173,6 +177,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 ControllerCliente controllerCliente = new ControllerCliente();
                 ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
                 ControllerPrescricao controllerPrescricao = new ControllerPrescricao();
+                ControllerUnidade controllerUnidade = new ControllerUnidade();
                 while (resultado.next()) {
                     Pedido pedido = new Pedido();
 
@@ -187,7 +192,8 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
                     pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
-
+                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
+                    
                     pedidos.add(pedido);
                 }
             } else {
@@ -203,7 +209,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
     }
     
     
-
+    //[to-do]: Metodos de calculo
     @Override
     public float calcularDescontoInsumo(Pedido pedido) throws RemoteException {
         float descontoInsumo = 0;

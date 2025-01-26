@@ -30,14 +30,10 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO tipo de insumo (nome, quant, data_validade, created_at, updated_at) VALUES (?, ?. ?, ?, ?)";
+                String sql = "INSERT INTO tipo de insumo (quant, data_validade,) VALUES (?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
-
-                stmt.setString(1, insumo.getNome());
-                stmt.setFloat(2, insumo.getQuant());
-                stmt.setTimestamp(3, insumo.getData_validade());
-                stmt.setTimestamp(4, insumo.getCreated_at());
-                stmt.setTimestamp(5, insumo.getUpdated_at());
+                stmt.setFloat(1, insumo.getQuant());
+                stmt.setTimestamp(2, insumo.getData_validade());
                 
                 stmt.executeUpdate();
                 System.out.println("Insumo inseridao com sucesso!");
@@ -59,13 +55,12 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "UPDATE tipo de insumo SET nome = ?, quant = ?, data_validade = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sql = "UPDATE tipo de insumo SET quant = ?, data_validade = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
-
-                stmt.setString(1, insumo.getNome());
-                stmt.setFloat(2, insumo.getQuant());
+                stmt.setFloat(1, insumo.getQuant());
+                stmt.setTimestamp(2, insumo.getData_validade());
+                
                 stmt.setInt(3, insumo.getId());
-                stmt.setTimestamp(4, insumo.getData_validade());
 
                 int linhasAfetadas = stmt.executeUpdate();
 
@@ -115,7 +110,7 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
     }
 
     @Override
-    public Insumo obterInsumo(Integer id) throws RemoteException {
+    public Insumo obterInsumo(int id) throws RemoteException {
         Insumo insumo = null;
         try {
             Conexao.conectar();
@@ -126,10 +121,12 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, id);
                 ResultSet rs = sentenca.executeQuery();
+                
 
                 if (rs.next()) {
                     insumo.setId(rs.getInt("id"));
-                    insumo.setNome(rs.getString("nome"));
+                    insumo.setQuant(rs.getFloat("quant"));
+                    insumo.setData_validade(rs.getTimestamp("data_validade"));
                     
                     return insumo;
                 } else {
@@ -145,49 +142,4 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
         }
         return insumo;
     }
-
-    @Override
-    public List<Insumo> buscarInsumosPorNome(String nome) throws RemoteException {
-        List<Insumo> insumos = new ArrayList<>();
-        try {
-            Conexao.conectar();
-            Connection conexao = Conexao.con;
-
-            if (conexao != null) {
-                String sql = "SELECT * FROM insumo WHERE nome LIKE ?";
-                PreparedStatement stmt = conexao.prepareStatement(sql);
-                stmt.setString(1, "%" + nome + "%");
-
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    ControllerTipoInsumo controllerTipoInsumo = new ControllerTipoInsumo();
-                    ControllerEstoque controllerEstoque = new ControllerEstoque();
-                    Insumo insumo = new Insumo();
-
-                    insumo.setId(rs.getInt("id"));
-                    insumo.setQuant(rs.getFloat("quant"));
-                    insumo.setHabilitado(rs.getBoolean("habilitado"));
-                    insumo.setNome(rs.getString("nome"));
-                    insumo.setData_validade(rs.getTimestamp("data_validade"));
-                    insumo.setCreated_at(rs.getTimestamp("created_at"));
-                    insumo.setUpdated_at(rs.getTimestamp("updated_at"));
-
-                    insumo.setTipo_insumo(controllerTipoInsumo.obterTipoInsumo(rs.getInt("tipo_insumo_id")));     
-                    insumo.setEstoque(controllerEstoque.obterEstoque(rs.getInt("estoque_id")));   
-                    
-                    insumos.add(insumo);
-                }
-            } else {
-                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RemoteException("Erro ao buscar insumo por nome: " + e.getMessage());
-        } finally {
-            Conexao.desconectar();
-        }
-        return insumos;
-    }
-
 }

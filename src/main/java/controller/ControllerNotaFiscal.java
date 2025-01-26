@@ -30,11 +30,10 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
             Connection conexao = Conexao.con;
             
             if (conexao != null) {
-                String sqlNotaFiscal = "INSERT INTO nota_fiscal (num_nota, data_emissao, valor_total, habilitado) VALUES (?, ?, ?, ?)";
+                String sqlNotaFiscal = "INSERT INTO nota_fiscal (num_nota, data_emissao, habilitado) VALUES (?, ?, ?, ?)";
                 PreparedStatement sentencaNotaFiscal = conexao.prepareStatement(sqlNotaFiscal);
                 sentencaNotaFiscal.setInt(1, nf.getNum_nota());
                 sentencaNotaFiscal.setTimestamp(2, nf.getData_emissao());
-                sentencaNotaFiscal.setFloat(3, nf.getValor_total());
                 sentencaNotaFiscal.setBoolean(4, nf.isHabilitado());
                 
                 System.out.println("Nota fiscal cadastrada com sucesso!");
@@ -65,7 +64,6 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
                     nf.setId(resultado.getInt("id"));
                     nf.setNum_nota(resultado.getInt("num_nota"));
                     nf.setData_emissao(resultado.getTimestamp("data_emissao"));
-                    nf.setValor_total(resultado.getFloat("valor_total"));
                     nf.setHabilitado(resultado.getBoolean("habilitado"));
 
                     return nf;
@@ -94,7 +92,6 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, nf.getNum_nota());
                 sentenca.setTimestamp(2, nf.getData_emissao());
-                sentenca.setFloat(3, nf.getValor_total());
                 sentenca.setBoolean(4, nf.isHabilitado());
                 sentenca.setInt(5, nf.getId());
                 sentenca.executeUpdate();

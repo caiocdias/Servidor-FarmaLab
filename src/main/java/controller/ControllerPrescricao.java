@@ -22,13 +22,11 @@ public class ControllerPrescricao extends UnicastRemoteObject implements Interfa
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO prescricao (crm, created_at, updated_at, id_cliente) VALUES (?, ?, ?, ?)";
+                String sql = "INSERT INTO prescricao (crm, id_cliente) VALUES (?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
 
                 stmt.setString(1, prescricao.getCrm());
-                stmt.setTimestamp(2, prescricao.getCreated_at());
-                stmt.setTimestamp(3, prescricao.getUpdated_at());
-                stmt.setInt(4, prescricao.getCliente().getId());
+                stmt.setInt(2, prescricao.getCliente().getId());
 
                 stmt.executeUpdate();
                 System.out.println("Prescrição inserida com sucesso!");

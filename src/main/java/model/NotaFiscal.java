@@ -15,7 +15,6 @@ public class NotaFiscal implements Serializable{
     private int id;
     private int num_nota;
     private Timestamp data_emissao;
-    private float valor_total;
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -25,11 +24,10 @@ public class NotaFiscal implements Serializable{
     
     }
     
-    public NotaFiscal(int id, int num_nota, Timestamp data_emissao, float valor_total, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+    public NotaFiscal(int id, int num_nota, Timestamp data_emissao, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
         setNum_nota(num_nota);
         setData_emissao(data_emissao);
-        setValor_total(valor_total);
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
@@ -59,14 +57,6 @@ public class NotaFiscal implements Serializable{
 
     public void setData_emissao(Timestamp data_emissao) {
         this.data_emissao = data_emissao;
-    }
-
-    public float getValor_total() {
-        return valor_total;
-    }
-
-    public void setValor_total(float valor_total) {
-        this.valor_total = valor_total;
     }
 
     public boolean isHabilitado() {

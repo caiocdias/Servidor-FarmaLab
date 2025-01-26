@@ -6,6 +6,8 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -23,12 +25,13 @@ public class Unidade implements Serializable {
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
+    private List<Tributo> tributos = new ArrayList<>();
     
     public Unidade(){
         
     }
     
-    public Unidade(int id, String nome, String cep, String cidade, String bairro, String rua, String complemento, String estado, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+    public Unidade(int id, String nome, String cep, String cidade, String bairro, String rua, String complemento, String estado, boolean habilitado, Timestamp created_at, Timestamp updated_at, List<Tributo> tributos){
         setId(id);
         setNome(nome);
         setCep(cep);
@@ -40,6 +43,7 @@ public class Unidade implements Serializable {
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
+        setTributos(tributos);
     }
 
     public int getId() {
@@ -128,5 +132,13 @@ public class Unidade implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public List<Tributo> getTributos() {
+        return tributos;
+    }
+
+    public void setTributos(List<Tributo> tributos) {
+        this.tributos = tributos;
     }
 }

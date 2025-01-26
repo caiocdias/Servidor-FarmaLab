@@ -22,6 +22,7 @@ public class Pedido implements Serializable {
     private Cliente cliente;
     private Funcionario funcionario;
     private Prescricao prescricao;
+    private Unidade unidade;
     private float descontoTotal;
     private float valorTotalBase;
     private float valorFinal;
@@ -30,7 +31,7 @@ public class Pedido implements Serializable {
         
     }
     
-    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, boolean pronta_entrega, float descontoTotal,float valorTotalBase,float valorFinal, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario, Prescricao prescricao) {
+    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, boolean pronta_entrega, float descontoTotal,float valorTotalBase,float valorFinal, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario, Prescricao prescricao, Unidade unidade) {
         setId(id);
         setStatus(status);
         setHabilitado(habilitado);
@@ -39,6 +40,7 @@ public class Pedido implements Serializable {
         setUpdated_at(updated_at);
         setCliente(cliente);
         setFuncionario(funcionario);
+        setUnidade(unidade);
         setPrescricao(prescricao);
         setDescontoTotal(descontoTotal);
         setValorTotalBase(valorTotalBase);
@@ -144,6 +146,14 @@ public class Pedido implements Serializable {
 
     public void setValorFinal(float valorFinal) {
         this.valorFinal = valorFinal;
+    }
+
+    public Unidade getUnidade() {
+        return unidade;
+    }
+
+    public void setUnidade(Unidade unidade) {
+        this.unidade = unidade;
     }
     
 }

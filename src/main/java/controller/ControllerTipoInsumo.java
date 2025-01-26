@@ -30,16 +30,15 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO tipo de insumo (nome, quant, created_at, updated_at) VALUES (?, ?. ?, ?)";
+                String sql = "INSERT INTO tipo de insumo (nome, quant, habilitado) VALUES (?, ?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
 
                 stmt.setString(1, tipoInsumo.getNome());
-                stmt.setTimestamp(2, tipoInsumo.getCreated_at());
-                stmt.setTimestamp(3, tipoInsumo.getUpdated_at());
-                stmt.setFloat(4, tipoInsumo.getQuant());
+                stmt.setFloat(2, tipoInsumo.getQuant());
+                stmt.setBoolean(3, tipoInsumo.isHabilitado());
 
                 stmt.executeUpdate();
-                System.out.println("Tipo de insumo inseridaocom sucesso!");
+                System.out.println("Tipo de insumo inserida com sucesso!");
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
@@ -58,12 +57,13 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "UPDATE tipo_insumo SET nome = ?, quant = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sql = "UPDATE tipo_insumo SET nome = ?, quant = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
 
                 stmt.setString(1, tipoInsumo.getNome());
                 stmt.setFloat(2, tipoInsumo.getQuant());
-                stmt.setInt(3, tipoInsumo.getId());
+                stmt.setBoolean(3, tipoInsumo.isHabilitado());
+                stmt.setInt(4, tipoInsumo.getId());
 
                 int linhasAfetadas = stmt.executeUpdate();
 
@@ -113,7 +113,7 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
     }
 
     @Override
-    public TipoInsumo obterTipoInsumo(Integer id) throws RemoteException {
+    public TipoInsumo obterTipoInsumo(int id) throws RemoteException {
         TipoInsumo tipoInsumo = null;
         try {
             Conexao.conectar();
@@ -139,7 +139,7 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
-        } catch (SQLException /* | NotBoundException | MalformedURLException */ e) {
+        } catch (SQLException e) {
             System.out.println("Erro ao obter o tipo de insumo: " + e.getMessage());
         } finally {
             Conexao.desconectar();
@@ -163,10 +163,6 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
 
                 while (rs.next()) {
                     TipoInsumo tipoProduto = new TipoInsumo();
-                    ControllerTipoProduto controllerTipoProduto = new ControllerTipoProduto();
-                    List<TipoProduto> tipo_produtos = new ArrayList<>();
-
-                    tipo_produtos.add(controllerTipoProduto.obterTipoProduto(rs.getInt("tipo_produto_id")));
 
                     tipoProduto.setId(rs.getInt("id"));
                     tipoProduto.setNome(rs.getString("nome"));
@@ -174,7 +170,6 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
                     tipoProduto.setHabilitado(rs.getBoolean("habilitado"));
                     tipoProduto.setCreated_at(rs.getTimestamp("created_at"));
                     tipoProduto.setUpdated_at(rs.getTimestamp("updated_at"));
-                    tipoProduto.setTipo_produtos(tipo_produtos);
                     
                     tipoInsumos.add(tipoProduto);
                 }
@@ -188,6 +183,11 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
             Conexao.desconectar();
         }
         return tipoInsumos;
+    }
+
+    @Override
+    public List<TipoInsumo> obterTipoInsumo(List<Integer> ids) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

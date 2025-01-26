@@ -20,20 +20,18 @@ public class TipoInsumo implements Serializable{
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
-    private List<TipoProduto> tipo_produtos = new ArrayList<>();
     
     public TipoInsumo(){
         
     }
     
-    public TipoInsumo(int id, String nome, float quant, boolean habilitado, Timestamp created_at, Timestamp updated_at, List<TipoProduto> tipo_produtos){
+    public TipoInsumo(int id, String nome, float quant, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
         setNome(nome);
         setHabilitado(habilitado);
         setQuant(quant);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
-        setTipo_produtos(tipo_produtos);
     }
 
     public int getId() {
@@ -84,11 +82,5 @@ public class TipoInsumo implements Serializable{
         this.updated_at = updated_at;
     }
 
-    public List<TipoProduto> getTipo_produtos() {
-        return tipo_produtos;
-    }
-
-    public void setTipo_produtos(List<TipoProduto> tipo_produtos) {
-        this.tipo_produtos = tipo_produtos;
-    } 
+    
 }

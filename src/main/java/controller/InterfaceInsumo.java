@@ -17,8 +17,5 @@ import model.Insumo;
 
     public void desativarInsumo(int id) throws RemoteException;
     
-    Insumo obterInsumo(Integer id) throws RemoteException;
-    
-    List<Insumo> buscarInsumosPorNome(String nome) throws RemoteException;
-    
+    Insumo obterInsumo(int id) throws RemoteException;
 }
