@@ -26,7 +26,7 @@ public class TipoProduto implements Serializable {
         
     }
     
-    public TipoProduto(int id, String nome, boolean habilitado, Timestamp created_at, Timestamp updated_at, List<TipoInsumo> tipo_insumos){
+    public TipoProduto(int id, String nome, String instrucoes, boolean habilitado, Timestamp created_at, Timestamp updated_at, List<TipoInsumo> tipo_insumos){
         setId(id);
         setNome(nome);
         setInstrucoes(instrucoes);

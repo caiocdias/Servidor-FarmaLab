@@ -162,16 +162,16 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    TipoInsumo tipoProduto = new TipoInsumo();
+                    TipoInsumo tipoInsumo = new TipoInsumo();
 
-                    tipoProduto.setId(rs.getInt("id"));
-                    tipoProduto.setNome(rs.getString("nome"));
-                    tipoProduto.setQuant(rs.getFloat("quant"));
-                    tipoProduto.setHabilitado(rs.getBoolean("habilitado"));
-                    tipoProduto.setCreated_at(rs.getTimestamp("created_at"));
-                    tipoProduto.setUpdated_at(rs.getTimestamp("updated_at"));
+                    tipoInsumo.setId(rs.getInt("id"));
+                    tipoInsumo.setNome(rs.getString("nome"));
+                    tipoInsumo.setQuant(rs.getFloat("quant"));
+                    tipoInsumo.setHabilitado(rs.getBoolean("habilitado"));
+                    tipoInsumo.setCreated_at(rs.getTimestamp("created_at"));
+                    tipoInsumo.setUpdated_at(rs.getTimestamp("updated_at"));
                     
-                    tipoInsumos.add(tipoProduto);
+                    tipoInsumos.add(tipoInsumo);
                 }
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
@@ -187,7 +187,45 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
 
     @Override
     public List<TipoInsumo> obterTipoInsumo(List<Integer> ids) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        List<TipoInsumo> tipoInsumos = new ArrayList();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT * FROM tipo_insumo WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                String insumosIds = new String();
+                for (int i = 0; i < ids.size(); i++) {
+                    String insumoId = ids.get(i).toString();
+                    insumosIds += insumoId;
+                    if (i != tipoInsumos.size() - 1) {
+                        insumosIds += ",";
+                    } 
+                }
+                sentenca.setString(1, insumosIds);
+                ResultSet resultado = sentenca.executeQuery();
+
+                while (resultado.next()) {
+                    TipoInsumo tipoInsumo = new TipoInsumo(
+                        resultado.getInt("id"),
+                        resultado.getString("nome"),
+                        resultado.getFloat("quantidade"),
+                        resultado.getBoolean("habilitado"),
+                        resultado.getTimestamp("created_at"),
+                        resultado.getTimestamp("updated_at")
+                    );
+                    tipoInsumos.add(tipoInsumo);
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao obter o tipo de insumo: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return tipoInsumos;
     }
 
 }

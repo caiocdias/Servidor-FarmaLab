@@ -140,10 +140,19 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, id);
                 ResultSet resultado = sentenca.executeQuery();
+                
                 List<TipoInsumo> tipoInsumos = new ArrayList<>();
-                //[to-do]: fazer query para retornar lista de id dos tipos de insumo
                 List<Integer> tipoInsumosIds = new ArrayList<>();
-                //[to-do]: fazer um for para recuperar e adicionar em tipos_insumo os tipo_insumos a partir do id
+            
+                String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE id = ?";
+                PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
+                sentenca2.setInt(1, id);
+                ResultSet resultado2 = sentenca2.executeQuery();
+                
+                while(resultado2.next()){
+                    tipoInsumosIds.add(resultado2.getInt("tipo_insumo_id"));
+                }
+                
                 ControllerTipoInsumo controllerTipoInsumo = new ControllerTipoInsumo();
                 tipoInsumos = controllerTipoInsumo.obterTipoInsumo(tipoInsumosIds);
                 
@@ -176,34 +185,16 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT id, nome, instrucoes, habilitado, created_at, updated_at FROM tipo_produto WHERE nome LIKE ?";
+                String sql = "SELECT id FROM tipo_produto WHERE nome LIKE ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
-
                 ResultSet rs = stmt.executeQuery();
-                ControllerTipoInsumo controllerTipoInsumo = new ControllerTipoInsumo();
-                
-                while (rs.next()) {
-                    TipoProduto tipoProduto = new TipoProduto();
-                    List<TipoInsumo> tipo_insumos = new ArrayList<>();
-                    
-
-                    tipoProduto.setId(rs.getInt("id"));
-                    tipoProduto.setNome(rs.getString("nome"));
-                    tipoProduto.setInstrucoes(rs.getString("instrucoes"));
-                    tipoProduto.setHabilitado(rs.getBoolean("habilitado"));
-                    tipoProduto.setCreated_at(rs.getTimestamp("created_at"));
-                    tipoProduto.setUpdated_at(rs.getTimestamp("updated_at"));
-                    
-                    //[to-do]: query recuperar tipos de insumo do tipo produto e fazer um for com a linha abaixo
-                    tipo_insumos.add(controllerTipoInsumo.obterTipoInsumo(rs.getInt("tipo_insumo_id")));
-                    tipoProduto.setTipo_insumos(tipo_insumos);
-                    
-                    tipoProdutos.add(tipoProduto);
+                List<Integer> produtosIds = new ArrayList(); 
+                while (rs.next()){
+                    produtosIds.add(rs.getInt("id"));
                 }
-            } else {
-                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
-            }
+                tipoProdutos = obterTipoProduto(produtosIds);
+            } 
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoteException("Erro ao buscar tipo de produto por nome: " + e.getMessage());
@@ -215,6 +206,60 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
 
     @Override
     public List<TipoProduto> obterTipoProduto(List<Integer> ids) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        List<TipoProduto> tipoProdutos = new ArrayList();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT * FROM tipo_insumo WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                String insumosIds = new String();
+                for (int i = 0; i < ids.size(); i++) {
+                    String insumoId = ids.get(i).toString();
+                    insumosIds += insumoId;
+                    if (i != tipoProdutos.size() - 1) {
+                        insumosIds += ",";
+                    } 
+                }
+                sentenca.setString(1, insumosIds);
+                ResultSet resultado = sentenca.executeQuery();
+                
+                while (resultado.next()) {
+                    List<Integer> tipoInsumosIds = new ArrayList<>();
+                    List<TipoInsumo> tipoInsumos = new ArrayList<>();
+                    
+                    String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE id = ?";
+                    PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
+                    sentenca2.setInt(1, resultado.getInt("id"));
+                    ResultSet resultado2 = sentenca2.executeQuery();
+                    
+                    while(resultado2.next()){
+                        tipoInsumosIds.add(resultado2.getInt("tipo_insumo_id"));
+                    }
+
+                    ControllerTipoInsumo controllerTipoInsumo = new ControllerTipoInsumo();
+                    tipoInsumos = controllerTipoInsumo.obterTipoInsumo(tipoInsumosIds);
+                    
+                    TipoProduto tipoProduto = new TipoProduto(
+                        resultado.getInt("id"),
+                        resultado.getString("nome"),
+                        resultado.getString("instrucoes"),
+                        resultado.getBoolean("habilitado"),
+                        resultado.getTimestamp("created_at"),
+                        resultado.getTimestamp("updated_at"),
+                        tipoInsumos
+                    );
+                    tipoProdutos.add(tipoProduto);
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao obter o tipo de insumo: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return tipoProdutos;
     }
 }
