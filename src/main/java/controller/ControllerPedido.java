@@ -11,10 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import model.Insumo;
 import model.MedicoParceiro;
 import model.Pedido;
 import model.Prescricao;
@@ -62,9 +60,14 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 }
                 ControllerProduto controllerProduto = new ControllerProduto();
                 for(Produto produto : pedido.getProdutos()){
-                    produto.setPedido_venda(pedido);
-                    if(produto.getId() != 0){
-                        produto.setPedido_producao(pedido);
+                    if(!pedido.isPronta_entrega()){
+                        produto.setPedido_venda(pedido);
+                        if(produto.getId() != 0){
+                            produto.setPedido_producao(pedido);
+                            controllerProduto.inserirProduto(produto);
+                        }
+                    }else{
+                        produto.setPronta_entrega(true);
                         controllerProduto.inserirProduto(produto);
                     }
                 }
