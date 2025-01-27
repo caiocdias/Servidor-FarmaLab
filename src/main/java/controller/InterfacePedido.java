@@ -8,6 +8,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import model.Pedido;
+import model.enums.StatusPedido;
 
 /**
  *
@@ -22,5 +23,8 @@ public interface InterfacePedido extends Remote{
     List<Pedido> buscarPedidosPorCliente(int clienteId) throws RemoteException;
     float calcularDescontoInsumo(Pedido pedido) throws RemoteException;
     float calcularDescontoMedico(Pedido pedido) throws RemoteException;
-    float calcularValorFinal(Pedido pedido) throws RemoteException;
+    Pedido calcularValorFinal(Pedido pedido) throws RemoteException;
+    float calcularTributo(Pedido pedido) throws RemoteException;
+    List<Pedido> buscarPedidosStatus(StatusPedido status) throws RemoteException;
+    
 }

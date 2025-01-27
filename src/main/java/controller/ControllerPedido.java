@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,9 @@ import model.Insumo;
 import model.MedicoParceiro;
 import model.Pedido;
 import model.Prescricao;
+import model.Produto;
+import model.TipoInsumo;
+import model.Tributo;
 import model.enums.StatusPedido;
 import util.Conexao;
 
@@ -37,17 +41,34 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, id_prescricao,id_unidade, status, habilitado, pronta_entrega, valor_total_base) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, id_prescricao,id_unidade, status, habilitado, pronta_entrega, valor_total_base, valor_final, desconto_total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement sentenca = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                pedido = calcularValorFinal(pedido);
                 sentenca.setInt(1, pedido.getCliente().getId());
                 sentenca.setInt(2, pedido.getFuncionario().getId());
                 sentenca.setInt(3, pedido.getPrescricao().getId());
                 sentenca.setInt(4, pedido.getUnidade().getId());
-                sentenca.setString(5, pedido.getStatus().name());
+                sentenca.setString(5, pedido.getStatus().getDescricao());
                 sentenca.setBoolean(6, pedido.isHabilitado());
                 sentenca.setBoolean(7, pedido.isPronta_entrega());
                 sentenca.setFloat(8, pedido.getValorTotalBase());
+                sentenca.setFloat(9, pedido.getValorFinal());
+                sentenca.setFloat(10, pedido.getDescontoTotal());
+                
                 sentenca.execute();
+                ResultSet rs = sentenca.getGeneratedKeys();
+                if (rs.next()) {
+                    pedido.setId(rs.getInt(1));
+                }
+                ControllerProduto controllerProduto = new ControllerProduto();
+                for(Produto produto : pedido.getProdutos()){
+                    produto.setPedido_venda(pedido);
+                    if(produto.getId() != 0){
+                        produto.setPedido_producao(pedido);
+                        controllerProduto.inserirProduto(produto);
+                    }
+                }
+                
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
@@ -119,7 +140,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 sentenca.setInt(2, pedido.getFuncionario().getId());
                 sentenca.setInt(3, pedido.getPrescricao().getId());
                 sentenca.setInt(4, pedido.getPrescricao().getId());
-                sentenca.setString(5, pedido.getStatus().name());
+                sentenca.setString(5, pedido.getStatus().getDescricao());
                 sentenca.setBoolean(6, pedido.isHabilitado());
                 sentenca.setBoolean(7, pedido.isPronta_entrega());
                 sentenca.setFloat(8, pedido.getValorTotalBase());
@@ -209,72 +230,78 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
     }
     
     
-    //[to-do]: Metodos de calculo
+    
     @Override
     public float calcularDescontoInsumo(Pedido pedido) throws RemoteException {
-        float descontoInsumo = 0;
-        /*
+        float descontoInsumo = 0.0f;
         try {
-            ControllerInsumo controllerInsumo = new ControllerInsumo();
-            Insumo insumo = controllerInsumo.obterInsumos(pedido); //terminar de desenvolver essa parte ainda, obter insumos de acordo com o pedido, talvez tem q setar um for (dependendo de quando insumos tem pra vencer)
-            Timestamp dataValidade = insumo.getData_validade();
-            long diasRestantes = (dataValidade.getTime() - System.currentTimeMillis()) / (1000 * 60 * 60 * 24);
-            if (diasRestantes <= 7) {
-                descontoInsumo = pedido.getValorTotalBase() * 0.10f; // 10% de desconto
+            List<Produto> produtos = pedido.getProdutos();
+            List<Integer> idsTipoInsumos = new ArrayList();
+            for(Produto produto : produtos){
+                for(TipoInsumo tipoInsumo : produto.getTipo_produto().getTipo_insumos()){
+                    idsTipoInsumos.add(tipoInsumo.getId());
+                }
             }
-
+            ControllerInsumo controllerInsumo = new ControllerInsumo();
+            int quantInsumoPromocao = controllerInsumo.promocaoInsumo(idsTipoInsumos); 
+            descontoInsumo = quantInsumoPromocao * 0.03f;
+            
         } catch (Exception e) {
             System.out.println("Erro ao calcular desconto para insumos: " + e.getMessage());
-        } 
-        */
+        }
+        
     return descontoInsumo;
     }
 
 
     @Override
     public float calcularDescontoMedico(Pedido pedido) throws RemoteException {
-    float descontoMedico = 0;    
+    float descontoMedico = 0.0f;    
     try {
         Prescricao prescricao = pedido.getPrescricao();
         
         ControllerMedicoParceiro controllerMedicoParceiro = new ControllerMedicoParceiro();
         MedicoParceiro medico = controllerMedicoParceiro.obterMedicoParceiro(null, prescricao.getCrm());
         if(medico != null){
-            descontoMedico = pedido.getValorTotalBase() * 0.05f; // 5% de desconto
+            descontoMedico = 0.05f;
         } 
     } catch (Exception e) {
-        System.out.println("Erro ao calcular desconto médico: " + e.getMessage());
+        System.out.println("Erro ao calcular desconto do médico parceiro: " + e.getMessage());
     } 
 
     return descontoMedico;
     }
 
     @Override
-    public float calcularValorFinal(Pedido pedido) throws RemoteException {
-        float valorFinal = 0;
+    public Pedido calcularValorFinal(Pedido pedido) throws RemoteException {
+        float valorFinal = 0.0f;
         try {
             pedido.setDescontoTotal(calcularDescontoInsumo(pedido) + calcularDescontoMedico(pedido));
-            ControllerTributo controllerTributo = new ControllerTributo();
-            //float tributos = ControllerTributos.calcularTributos();
-            valorFinal = pedido.getValorTotalBase() -  pedido.getDescontoTotal(); //+ tributos
+            valorFinal = pedido.getValorTotalBase() * (1 -  pedido.getDescontoTotal() + calcularTributo(pedido));
             
-            Conexao.conectar();
-            Connection conexao = Conexao.con;
-
-            if (conexao != null) {
-                String sql = "INSERT INTO pedido (desconto_total, valor_final) VALUES (?, ?)";
-                PreparedStatement sentenca = conexao.prepareStatement(sql);
-                sentenca.setFloat(1, pedido.getDescontoTotal());
-                sentenca.setFloat(2, pedido.getValorFinal());
-                sentenca.execute();
-            }else {
-                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
-            }
-        } catch (RemoteException | SQLException e) {
+        } catch (Exception e) {
             System.out.println("Erro ao calcular valor total: " + e.getMessage());
         } 
         
-        return valorFinal;
+        return pedido;
+    }
+
+    @Override
+    public float calcularTributo(Pedido pedido) throws RemoteException {
+        float tributoTotal = 0.0f;
+        try{
+            for(Tributo tributo : pedido.getUnidade().getTributos()){
+                tributoTotal += tributo.getPorcentagem();
+            }
+        } catch(Exception e){
+            
+        }
+        return tributoTotal;
+    }
+
+    @Override
+    public List<Pedido> buscarPedidosStatus(StatusPedido status) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

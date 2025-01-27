@@ -40,7 +40,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                 sentenca.setInt(1, orcamento.getUnidade().getId());
                 sentenca.setInt(2, orcamento.getCliente().getId());
                 sentenca.setInt(3, orcamento.getFuncionario().getId());
-                sentenca.setString(4, orcamento.getStatus().name());
+                sentenca.setString(4, orcamento.getStatus().getDescricao());
                 sentenca.setString(5, orcamento.getDescricao());
                 sentenca.setString(6, orcamento.getObservacoes());
                 sentenca.setBoolean(7, orcamento.isHabilitado());
@@ -92,7 +92,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
-        } catch (SQLException /*| NotBoundException | MalformedURLException*/ e) {
+        } catch (SQLException e) {
             System.out.println("Erro ao obter o Orçamento: " + e.getMessage());
         } finally {
             Conexao.desconectar();
@@ -111,7 +111,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                 sentenca.setInt(1, orcamento.getUnidade().getId());
                 sentenca.setInt(2, orcamento.getCliente().getId());
                 sentenca.setInt(3, orcamento.getFuncionario().getId());
-                sentenca.setString(4, orcamento.getStatus().name());
+                sentenca.setString(4, orcamento.getStatus().getDescricao());
                 sentenca.setString(5, orcamento.getDescricao());
                 sentenca.setString(6, orcamento.getObservacoes());
                 sentenca.setBoolean(7, orcamento.isHabilitado());

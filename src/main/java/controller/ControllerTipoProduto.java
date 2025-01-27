@@ -144,7 +144,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                 List<TipoInsumo> tipoInsumos = new ArrayList<>();
                 List<Integer> tipoInsumosIds = new ArrayList<>();
             
-                String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE id = ?";
+                String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE tipo_produto_id = ?";
                 PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                 sentenca2.setInt(1, id);
                 ResultSet resultado2 = sentenca2.executeQuery();
@@ -212,7 +212,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT * FROM tipo_insumo WHERE id = ?";
+                String sql = "SELECT * FROM tipo_produto WHERE id = ?";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 String insumosIds = new String();
                 for (int i = 0; i < ids.size(); i++) {
@@ -229,7 +229,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                     List<Integer> tipoInsumosIds = new ArrayList<>();
                     List<TipoInsumo> tipoInsumos = new ArrayList<>();
                     
-                    String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE id = ?";
+                    String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE tipo_produto_id = ?";
                     PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                     sentenca2.setInt(1, resultado.getInt("id"));
                     ResultSet resultado2 = sentenca2.executeQuery();

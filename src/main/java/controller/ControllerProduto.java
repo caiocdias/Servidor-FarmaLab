@@ -30,17 +30,18 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO tipo de produto (id_pedido, id_tipo_produto, id_estoque, data_validade, pronta_entrega, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO tipo de produto (id_pedido_venda, id_pedido_producao, id_tipo_produto, id_estoque, data_validade, pronta_entrega, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 
-                stmt.setInt(1, produto.getPedido().getId());
-                stmt.setInt(2, produto.getTipo_produto().getId());
-                stmt.setInt(3, produto.getEstoque().getId());
-                stmt.setTimestamp(4, produto.getData_validade());
-                stmt.setBoolean(5, produto.isPronta_entrega());
-                stmt.setBoolean(6, produto.isColetado());
-                stmt.setBoolean(7, produto.isHabilitado());
+                stmt.setInt(1, produto.getPedido_venda().getId());
+                stmt.setInt(2, produto.getPedido_producao().getId());
+                stmt.setInt(3, produto.getTipo_produto().getId());
+                stmt.setInt(4, produto.getEstoque().getId());
+                stmt.setTimestamp(5, produto.getData_validade());
+                stmt.setBoolean(6, produto.isPronta_entrega());
+                stmt.setBoolean(7, produto.isColetado());
+                stmt.setBoolean(8, produto.isHabilitado());
                 
                 
                 stmt.executeUpdate();
@@ -63,17 +64,18 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "UPDATE tipo de produto SET id_pedido = ?, id_tipo_produto = ?, id_estoque = ?, data_validade = ?, pronta_entrega = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sql = "UPDATE tipo de produto SET id_pedido_venda = ?, id_pedido_producao = ?, id_tipo_produto = ?, id_estoque = ?, data_validade = ?, pronta_entrega = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
 
-                stmt.setInt(1, produto.getPedido().getId());
-                stmt.setInt(2, produto.getTipo_produto().getId());
-                stmt.setInt(3, produto.getEstoque().getId());
-                stmt.setTimestamp(4, produto.getData_validade());
-                stmt.setBoolean(5, produto.isPronta_entrega());
-                stmt.setBoolean(6, produto.isColetado());
-                stmt.setBoolean(7, produto.isHabilitado());
-                stmt.setInt(8, produto.getId());
+                stmt.setInt(1, produto.getPedido_venda().getId());
+                stmt.setInt(2, produto.getPedido_producao().getId());
+                stmt.setInt(3, produto.getTipo_produto().getId());
+                stmt.setInt(4, produto.getEstoque().getId());
+                stmt.setTimestamp(5, produto.getData_validade());
+                stmt.setBoolean(6, produto.isPronta_entrega());
+                stmt.setBoolean(7, produto.isColetado());
+                stmt.setBoolean(8, produto.isHabilitado());
+                stmt.setInt(9, produto.getId());
 
                 int linhasAfetadas = stmt.executeUpdate();
 
@@ -144,7 +146,8 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     produto.setColetado(resultado.getBoolean("coletado"));
                     produto.setHabilitado(resultado.getBoolean("habilitado"));
                     
-                    produto.setPedido(controllerPedido.obterPedido(resultado.getInt("pedido_id")));
+                    produto.setPedido_venda(controllerPedido.obterPedido(resultado.getInt("pedido_id")));
+                    produto.setPedido_producao(controllerPedido.obterPedido(resultado.getInt("pedido_id")));
                     produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(resultado.getInt("pedido_id")));
                     produto.setEstoque(controllerEstoque.obterEstoque(resultado.getInt("pedido_id")));
                     
@@ -191,7 +194,8 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     produto.setCreated_at(rs.getTimestamp("created_at"));
                     produto.setUpdated_at(rs.getTimestamp("updated_at"));
 
-                    produto.setPedido(controllerPedido.obterPedido(rs.getInt("pedido_id")));
+                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("pedido_id")));
+                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("pedido_id")));
                     produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("tipo_produto_id")));     
                     produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("estoque_id")));   
                     
@@ -207,6 +211,47 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
             Conexao.desconectar();
         }
         return produtos;
+    }
+
+    @Override
+    public Produto produtoDisponivel(int idTipoProduto) throws RemoteException {
+        Produto produto = new Produto();
+        try{
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+            
+            if (conexao != null) {
+                String sql = "SELECT * FROM produto WHERE pronta_entrega = 1 AND tipo_produto_id = ? AND pedido_venda is null LIMIT 1";
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setInt(1, idTipoProduto);
+                ResultSet rs = stmt.executeQuery();
+                
+                ControllerPedido controllerPedido = new ControllerPedido();
+                ControllerTipoProduto controllerTipoProduto = new ControllerTipoProduto();
+                ControllerEstoque controllerEstoque = new ControllerEstoque();
+                if (rs.next()) {
+                    produto.setData_validade(rs.getTimestamp("data_validade"));
+                    produto.setPronta_entrega(rs.getBoolean("pronta_entrega"));
+                    produto.setColetado(rs.getBoolean("coletado"));
+                    produto.setHabilitado(rs.getBoolean("habilitado"));
+                    
+                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("pedido_id")));
+                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("pedido_id")));
+                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("pedido_id")));
+                    produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("pedido_id")));
+                } else {
+                    System.out.println("Produto não disponivel em estoque.");
+                }
+            }else{
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+            
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new RemoteException("Erro ao buscar produto por nome: " + e.getMessage());
+        }
+        
+        return produto;
     }
 
 }

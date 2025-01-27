@@ -181,5 +181,10 @@ public class ControllerTributo extends UnicastRemoteObject implements InterfaceT
         }
         return tributos;
     }
+
+    @Override
+    public List<Tributo> obterTributo(List<Integer> ids) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

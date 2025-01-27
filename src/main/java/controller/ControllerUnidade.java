@@ -9,6 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,16 +141,24 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
 
             if (conexao != null) {
                 String sql = "SELECT id, cep, endereco, cidade, bairro, rua, estado, habilitado, created_at, updated_at FROM unidade WHERE id = ?";
-                
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, id);
                 ResultSet rs = stmt.executeQuery();
                 
                 List<Tributo> tributos = new ArrayList();
-                //[to-do]: armazenar os tributos em tributos
-                    //for(){
-                    
-                    //}
+                List<Integer> tributosIds = new ArrayList<>();
+                
+                String sql2 = "SELECT tributo_id FROM unidade_tributo WHERE unidade_id = ?";
+                PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
+                sentenca2.setInt(1, id);
+                ResultSet resultado2 = sentenca2.executeQuery();
+                
+                while(resultado2.next()){
+                    tributosIds.add(resultado2.getInt("tributo_id"));
+                }
+                
+                ControllerTributo controllerTributo = new ControllerTributo();
+                tributos = controllerTributo.obterTributo(tributosIds);
                 
                 if (rs.next()) {
                     unidade = new Unidade(
@@ -187,36 +196,83 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT id, cep, endereco, cidade, bairro, rua, estado, habilitado, created_at, updated_at FROM unidade WHERE nome LIKE ?";
+                String sql = "SELECT id FROM unidade WHERE nome LIKE ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
-
                 ResultSet rs = stmt.executeQuery();
-                   
-                while (rs.next()) {
-                    List<Tributo> tributos = new ArrayList();
+                List<Integer> tributosIds = new ArrayList(); 
+                while (rs.next()){
+                    tributosIds.add(rs.getInt("id"));
+                }
+                unidades = obterUnidade(tributosIds);
+            } 
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao buscar unidade por nome: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return unidades;
+    }
+
+    @Override
+    public List<Unidade> obterUnidade(List<Integer> ids) throws RemoteException {
+        List<Unidade> unidades = new ArrayList();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT * FROM unidade WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                String tributosIds = new String();
+                for (int i = 0; i < ids.size(); i++) {
+                    String tributoId = ids.get(i).toString();
+                    tributosIds += tributoId;
+                    if (i != ids.size() - 1) {
+                        tributosIds += ",";
+                    } 
+                }
+                sentenca.setString(1, tributosIds);
+                ResultSet resultado = sentenca.executeQuery();
+                
+                while (resultado.next()) {
+                    List<Integer> listTributosIds = new ArrayList<>();
+                    List<Tributo> tributos = new ArrayList<>();
+                    
+                    String sql2 = "SELECT tributo_id FROM unidade_tributo WHERE unidade_id = ?";
+                    PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
+                    sentenca2.setInt(1, resultado.getInt("id"));
+                    ResultSet resultado2 = sentenca2.executeQuery();
+                    
+                    while(resultado2.next()){
+                        listTributosIds.add(resultado2.getInt("tributo_id"));
+                    }
+
+                    ControllerTributo controllerTributo = new ControllerTributo();
+                    tributos = controllerTributo.obterTributo(listTributosIds);
+                    
                     Unidade unidade = new Unidade(
-                            rs.getInt("id"),
-                            rs.getString("nome"),
-                            rs.getString("cep"),
-                            rs.getString("cidade"),
-                            rs.getString("bairro"),
-                            rs.getString("rua"),
-                            rs.getString("complemento"),
-                            rs.getString("estado"),
-                            rs.getBoolean("habilitado"),
-                            rs.getTimestamp("created_at"),
-                            rs.getTimestamp("updated_at"),
-                            tributos
+                        resultado.getInt("id"),
+                        resultado.getString("nome"),
+                        resultado.getString("cep"),
+                        resultado.getString("cidade"),
+                        resultado.getString("bairro"),
+                        resultado.getString("rua"),
+                        resultado.getString("complemento"),
+                        resultado.getString("estado"),
+                        resultado.getBoolean("habilitado"),
+                        resultado.getTimestamp("created_at"),
+                        resultado.getTimestamp("updated_at"),
+                        tributos
                     );
                     unidades.add(unidade);
                 }
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RemoteException("Erro ao buscar unidades por nome: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Erro ao obter o tributo: " + e.getMessage());
         } finally {
             Conexao.desconectar();
         }

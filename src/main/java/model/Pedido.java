@@ -6,6 +6,8 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import model.enums.StatusPedido;
 
 /**
@@ -26,12 +28,13 @@ public class Pedido implements Serializable {
     private float descontoTotal;
     private float valorTotalBase;
     private float valorFinal;
+    private List<Produto> produtos = new ArrayList<>();
     
     public Pedido() {
         
     }
     
-    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, boolean pronta_entrega, float descontoTotal,float valorTotalBase,float valorFinal, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario, Prescricao prescricao, Unidade unidade) {
+    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, boolean pronta_entrega, float descontoTotal,float valorTotalBase,float valorFinal, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario, Prescricao prescricao, Unidade unidade, List<Produto> produtos) {
         setId(id);
         setStatus(status);
         setHabilitado(habilitado);
@@ -45,6 +48,7 @@ public class Pedido implements Serializable {
         setDescontoTotal(descontoTotal);
         setValorTotalBase(valorTotalBase);
         setValorFinal(valorFinal);
+        setProdutos(produtos);
     }
     
     public int getId() {
@@ -154,6 +158,14 @@ public class Pedido implements Serializable {
 
     public void setUnidade(Unidade unidade) {
         this.unidade = unidade;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
     }
     
 }

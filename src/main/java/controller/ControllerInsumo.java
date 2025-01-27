@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Insumo;
+import model.TipoInsumo;
 import util.Conexao;
 
 /**
@@ -135,11 +136,50 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             } else {
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
-        } catch (SQLException /* | NotBoundException | MalformedURLException */ e) {
+        } catch (SQLException e) {
             System.out.println("Erro ao obter o insumo: " + e.getMessage());
         } finally {
             Conexao.desconectar();
         }
         return insumo;
+    }
+
+    @Override
+    public int promocaoInsumo(List<Integer> idsTipoInsumos) throws RemoteException {
+        int insumosPromocao = 0;
+        try{
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                
+                String sql = "SELECT tipo_insumo_id, SUM(quant) AS total_quant FROM insumo WHERE quant > 25 AND DATEDIFF(data_validade, CURRENT_DATE()) < 30 GROUP BY tipo_insumo_id;";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                String insumosIds = new String();
+                
+                for (int i = 0; i < idsTipoInsumos.size(); i++) {
+                    String tributoId = idsTipoInsumos.get(i).toString();
+                    insumosIds += tributoId;
+                    if (i != idsTipoInsumos.size() - 1) {
+                        insumosIds += ",";
+                    } 
+                }
+                sentenca.setString(1, insumosIds);
+                ResultSet rs = sentenca.executeQuery();
+               
+                if (rs.next()) {
+                     insumosPromocao++;
+                } else {
+                    System.out.println("Insumo com estes IDs não encontrados.");
+                }
+            }else{
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        }catch (Exception e){
+            
+        } finally {
+            Conexao.desconectar();
+        }
+        return insumosPromocao;
     }
 }

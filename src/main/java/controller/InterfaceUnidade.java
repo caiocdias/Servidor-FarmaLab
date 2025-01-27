@@ -21,6 +21,8 @@ public interface InterfaceUnidade extends Remote{
     void desativarUnidade(int id) throws RemoteException;
 
     Unidade obterUnidade(int id) throws RemoteException;
+    
+    List<Unidade> obterUnidade(List<Integer> ids) throws RemoteException;
 
     List<Unidade> buscarUnidadePorNome(String nome) throws RemoteException;
 }

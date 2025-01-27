@@ -21,6 +21,8 @@ public interface InterfaceTributo extends Remote{
     void desativarTributo(int id) throws RemoteException;
 
     Tributo obterTributo(int id) throws RemoteException;
+    
+    List<Tributo> obterTributo(List<Integer> ids) throws RemoteException;
 
     List<Tributo> buscarTributoPorNome(String nome) throws RemoteException;
 }

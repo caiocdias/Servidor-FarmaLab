@@ -4,6 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import model.Insumo;
+import model.TipoInsumo;
 
 /**
  *
@@ -18,4 +19,6 @@ import model.Insumo;
     public void desativarInsumo(int id) throws RemoteException;
     
     Insumo obterInsumo(int id) throws RemoteException;
+    
+    public int promocaoInsumo(List<Integer> idsTipoInsumos) throws RemoteException;
 }

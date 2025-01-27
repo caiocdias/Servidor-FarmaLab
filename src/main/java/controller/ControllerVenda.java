@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 import model.Venda;
+import model.enums.StatusPedido;
 import util.Conexao;
 
 /**
@@ -37,7 +38,9 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
                     stmtVenda.setInt(2, venda.getPedido().getId());
                     stmtVenda.setInt(3, venda.getNota_fiscal().getId());
                     stmtVenda.executeUpdate();
-
+                    venda.getPedido().setStatus(StatusPedido.PRONTO_PARA_PRODUCAO);
+                    ControllerPedido controllerPedido = new ControllerPedido();
+                    controllerPedido.atualizarPedido(venda.getPedido());
                     System.out.println("Venda inserida com sucesso!");
                 } else {
                     System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
