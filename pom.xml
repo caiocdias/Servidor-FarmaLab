@@ -8,7 +8,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>20</maven.compiler.release>
-        <exec.mainClass>view.Servidor</exec.mainClass>
+        <exec.mainClass>view.Server</exec.mainClass>
     </properties>
     
     <dependencies>

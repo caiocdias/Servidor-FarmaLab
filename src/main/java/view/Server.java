@@ -15,7 +15,7 @@ import controller.InterfaceNotaFiscal;
 import controller.InterfaceOrcamento;
 import controller.InterfacePrescricao;
 
-public class Servidor {
+public class Server {
 
     public static void main(String[] args) {
         try {
