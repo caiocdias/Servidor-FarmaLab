@@ -203,5 +203,10 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
         }
         return vendas;
     }
+
+    @Override
+    public String imprimirNotaFiscal(Venda venda) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

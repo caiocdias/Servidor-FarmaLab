@@ -304,6 +304,87 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
 
     @Override
     public List<Pedido> buscarPedidosStatus(StatusPedido status) throws RemoteException {
+        List<Pedido> pedidos = new ArrayList<>();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT id FROM pedido WHERE status = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setString(1, status.getDescricao());
+                ResultSet rs = stmt.executeQuery();
+                List<Integer> pedidosIds = new ArrayList(); 
+                while (rs.next()){
+                    pedidosIds.add(rs.getInt("id"));
+                }
+                pedidos = obterPedido(pedidosIds);
+            } 
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao buscar pedidos por status: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return pedidos;
+    }
+    
+    public List<Pedido> obterPedido(List<Integer> ids) throws RemoteException {
+        List<Pedido> pedidos = new ArrayList();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT * FROM pedido WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                String pedidoIds = new String();
+                for (int i = 0; i < ids.size(); i++) {
+                    String pedidoId = ids.get(i).toString();
+                    pedidoIds += pedidoId;
+                    if (i != ids.size() - 1) {
+                        pedidoIds += ",";
+                    } 
+                }
+                sentenca.setString(1, pedidoIds);
+                ResultSet resultado = sentenca.executeQuery();
+                
+                ControllerCliente controllerCliente = new ControllerCliente();
+                ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
+                ControllerPrescricao controllerPrescricao = new ControllerPrescricao();
+                ControllerUnidade controllerUnidade = new ControllerUnidade();
+                
+                while (resultado.next()) {
+                    Pedido pedido = new Pedido();
+
+                    pedido.setId(resultado.getInt("id"));
+                    pedido.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
+                    pedido.setHabilitado(resultado.getBoolean("habilitado"));
+                    pedido.setStatus(StatusPedido.valueOf(resultado.getString("status")));
+                    pedido.setDescontoTotal(resultado.getFloat("desconto_total"));
+                    pedido.setValorTotalBase(resultado.getFloat("valor_total_base"));
+                    pedido.setValorFinal(resultado.getFloat("valor_final"));
+
+                    pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
+                    pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
+                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
+                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
+                    
+                    pedidos.add(pedido);
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao obter o tributo: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return pedidos;
+    }
+
+    @Override
+    public void retirarPedido(Pedido pedido) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     

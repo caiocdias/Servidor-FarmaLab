@@ -14,13 +14,15 @@ import model.Venda;
  * @author Rafae
  */
 public interface InterfaceVenda extends Remote{
-    void inserirVenda(Venda unidade) throws RemoteException;
+    void inserirVenda(Venda venda) throws RemoteException;
 
-    void atualizarVenda(Venda unidade) throws RemoteException;
+    void atualizarVenda(Venda venda) throws RemoteException;
 
     void desativarVenda(int id) throws RemoteException;
 
     Venda obterVenda(int id) throws RemoteException;
 
     List<Venda> buscarVendaPorClienteOuFuncionario(Integer cliente_id, Integer funcionario_id) throws RemoteException;
+    
+    String imprimirNotaFiscal(Venda venda) throws RemoteException;
 }
