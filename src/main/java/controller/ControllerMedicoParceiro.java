@@ -126,7 +126,7 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
     }
 
     @Override
-    public MedicoParceiro obterMedicoParceiro(Integer id, String cpf) throws RemoteException {
+    public MedicoParceiro obterMedicoParceiro(Integer id, String crm) throws RemoteException {
         MedicoParceiro medicoParceiro = null;
         try {
             Conexao.conectar();
@@ -139,8 +139,8 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
                 if (id != null) {
                     sql += " AND p.id = ?";
                 }
-                if (cpf != null && !cpf.isEmpty()) {
-                    sql += " AND p.cpf = ?";
+                if (crm != null && !crm.isEmpty()) {
+                    sql += " AND m.crm = ?";
                 }
 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -149,8 +149,8 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
                 if (id != null) {
                     stmt.setInt(paramIndex++, id);
                 }
-                if (cpf != null && !cpf.isEmpty()) {
-                    stmt.setString(paramIndex++, cpf);
+                if (crm != null && !crm.isEmpty()) {
+                    stmt.setString(paramIndex++, crm);
                 }
 
                 ResultSet rs = stmt.executeQuery();

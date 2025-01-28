@@ -13,7 +13,7 @@ public interface InterfaceMedicoParceiro extends Remote {
 
     void desativarMedicoParceiro(int id) throws RemoteException;
 
-    MedicoParceiro obterMedicoParceiro(Integer id, String cpf) throws RemoteException;
+    MedicoParceiro obterMedicoParceiro(Integer id, String crm) throws RemoteException;
 
     List<MedicoParceiro> buscarMedicosParceirosPorNome(String nome) throws RemoteException;
 }
