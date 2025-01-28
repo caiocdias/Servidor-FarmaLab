@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS auditoria (
     funcionario_id INT NOT NULL,
     CONSTRAINT fk_auditoria_funcionario
         FOREIGN KEY (funcionario_id)
-        REFERENCES funcionario(id)
+        REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -102,6 +102,16 @@ CREATE TABLE IF NOT EXISTS tipo_insumo (
     nome VARCHAR(50),
     quant FLOAT,
     habilitado BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tipo_produto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50),
+    instrucoes VARCHAR(255),
+    habilitado BOOLEAN,
+    valor_base FLOAT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -184,6 +194,20 @@ CREATE TABLE IF NOT EXISTS tributo_nota_fiscal (
         ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS prescricao (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    crm VARCHAR(13),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    cliente_id INT NOT NULL,
+    CONSTRAINT fk_prescricao_cliente
+        FOREIGN KEY (cliente_id)
+        REFERENCES pessoa(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS pedido (
     id INT AUTO_INCREMENT PRIMARY KEY,
     status VARCHAR(20),
@@ -199,14 +223,14 @@ CREATE TABLE IF NOT EXISTS pedido (
     cliente_id INT NOT NULL,
     CONSTRAINT fk_pedido_cliente
         FOREIGN KEY (cliente_id)
-        REFERENCES cliente(id)
+        REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
     funcionario_id INT NOT NULL,
     CONSTRAINT fk_pedido_funcionario
         FOREIGN KEY (funcionario_id)
-        REFERENCES funcionario(id)
+        REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 	
@@ -223,16 +247,6 @@ CREATE TABLE IF NOT EXISTS pedido (
         REFERENCES unidade(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS tipo_produto (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(50),
-    instrucoes VARCHAR(255),
-    habilitado BOOLEAN,
-    valor_base FLOAT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS venda (
@@ -308,20 +322,6 @@ CREATE TABLE IF NOT EXISTS produto (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS prescricao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    crm VARCHAR(13),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    cliente_id INT NOT NULL,
-    CONSTRAINT fk_prescricao_cliente
-        FOREIGN KEY (cliente_id)
-        REFERENCES cliente(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS orcamento (
     id INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(50),
@@ -342,14 +342,14 @@ CREATE TABLE IF NOT EXISTS orcamento (
     cliente_id INT NOT NULL,
     CONSTRAINT fk_orcamento_cliente
         FOREIGN KEY (cliente_id)
-        REFERENCES cliente(id)
+        REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
     funcionario_id INT NOT NULL,
     CONSTRAINT fk_orcamento_funcionario
         FOREIGN KEY (funcionario_id)
-        REFERENCES funcionario(id)
+        REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
