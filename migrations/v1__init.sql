@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS auditoria (
 
 CREATE TABLE IF NOT EXISTS unidade (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    nome varchar(50),
     cep VARCHAR(9),
     cidade VARCHAR(20),
     bairro VARCHAR(20),
@@ -160,7 +161,6 @@ CREATE TABLE IF NOT EXISTS nota_fiscal (
     id INT AUTO_INCREMENT PRIMARY KEY,
     num_nota INT NOT NULL,
     data_emissao TIMESTAMP,
-    valor_total FLOAT,
     habilitado BOOLEAN,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS tributo_nota_fiscal (
 
     nota_fiscal_id INT NOT NULL,
     CONSTRAINT fk_tributo_nota_fiscal_nota_fiscal
-        FOREIGN KEY (nota_fistacal_id)
+        FOREIGN KEY (nota_fiscal_id)
         REFERENCES nota_fiscal(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -192,6 +192,7 @@ CREATE TABLE IF NOT EXISTS pedido (
     desconto_total FLOAT,
     valor_total_base FLOAT,
     valor_final FLOAT,
+    tributo_total FLOAT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
@@ -214,13 +215,22 @@ CREATE TABLE IF NOT EXISTS pedido (
         FOREIGN KEY (prescricao_id)
         REFERENCES prescricao(id)
         ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    unidade_id INT NOT NULL,
+    CONSTRAINT fk_pedido_unidade
+        FOREIGN KEY (unidade_id)
+        REFERENCES unidade(id)
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tipo_produto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50),
+    instrucoes VARCHAR(255),
     habilitado BOOLEAN,
+    valor_base FLOAT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -229,11 +239,19 @@ CREATE TABLE IF NOT EXISTS venda (
     id INT AUTO_INCREMENT PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    habilitado BOOLEAN,
 
     unidade_id INT NOT NULL,
     CONSTRAINT fk_venda_unidade
         FOREIGN KEY (unidade_id)
         REFERENCES unidade(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    pedido_id INT NOT NULL,
+    CONSTRAINT fk_venda_pedido
+        FOREIGN KEY (pedido_id)
+        REFERENCES pedido(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
@@ -251,10 +269,19 @@ CREATE TABLE IF NOT EXISTS produto (
     habilitado BOOLEAN,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    pronta_entrega BOOLEAN,
+    coletado BOOLEAN,
 
-    pedido_id INT NOT NULL,
-    CONSTRAINT fk_produto_pedido
-        FOREIGN KEY (pedido_id)
+    pedido_producao_id INT,
+    CONSTRAINT fk_produto_pedido_producao
+        FOREIGN KEY (pedido_producao_id)
+        REFERENCES pedido(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    pedido_venda_id INT,
+    CONSTRAINT fk_produto_pedido_venda
+        FOREIGN KEY (pedido_venda_id)
         REFERENCES pedido(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
@@ -298,8 +325,10 @@ CREATE TABLE IF NOT EXISTS prescricao (
 CREATE TABLE IF NOT EXISTS orcamento (
     id INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(50),
-    status VARCHAR(20),
+    status VARCHAR(50),
     habilitado BOOLEAN,
+    observacoes VARCHAR(50),
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
