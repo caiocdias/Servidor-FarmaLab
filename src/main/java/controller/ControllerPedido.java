@@ -35,11 +35,18 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
     @Override
     public void inserirPedido(Pedido pedido) throws RemoteException {
         try {
+            
+            Float valorTotalBase = 0.0f;
+            for(Produto produto : pedido.getProdutos()){
+                valorTotalBase += produto.getTipo_produto().getValor_base();
+            }
+            pedido.setValorTotalBase(valorTotalBase);
+            
             Conexao.conectar();
             Connection conexao = Conexao.con;
-
+            
             if (conexao != null) {
-                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, id_prescricao,id_unidade, status, habilitado, pronta_entrega, valor_total_base, valor_final, desconto_total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO pedido (id_cliente, id_funcionario, id_prescricao,id_unidade, status, habilitado, pronta_entrega, valor_total_base, valor_final, desconto_total, tributo_total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement sentenca = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 pedido = calcularValorFinal(pedido);
                 sentenca.setInt(1, pedido.getCliente().getId());
@@ -52,6 +59,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 sentenca.setFloat(8, pedido.getValorTotalBase());
                 sentenca.setFloat(9, pedido.getValorFinal());
                 sentenca.setFloat(10, pedido.getDescontoTotal());
+                sentenca.setFloat(11, pedido.getTributoTotal());
                 
                 sentenca.execute();
                 ResultSet rs = sentenca.getGeneratedKeys();
@@ -107,6 +115,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     pedido.setDescontoTotal(resultado.getFloat("desconto_total"));
                     pedido.setValorTotalBase(resultado.getFloat("valor_total_base"));
                     pedido.setValorFinal(resultado.getFloat("valor_final"));
+                    pedido.setTributoTotal(resultado.getFloat("tributo_total"));
                     
                     String statusString = resultado.getString("status");
                     pedido.setStatus(StatusPedido.valueOf(statusString));
@@ -137,7 +146,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Conexao.conectar();
             Connection conexao = Conexao.con;
             if (conexao != null) {
-                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, id_prescricao = ?,id_unidade = ?, status = ?, habilitado = ?, pronta_entrega = ?, valor_total_base = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
+                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, id_prescricao = ?,id_unidade = ?, status = ?, habilitado = ?, pronta_entrega = ?, valor_total_base = ?, valor_final = ?, tributo_total = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, pedido.getCliente().getId());
                 sentenca.setInt(2, pedido.getFuncionario().getId());
@@ -147,7 +156,9 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 sentenca.setBoolean(6, pedido.isHabilitado());
                 sentenca.setBoolean(7, pedido.isPronta_entrega());
                 sentenca.setFloat(8, pedido.getValorTotalBase());
-                sentenca.setInt(9, pedido.getId());
+                sentenca.setFloat(9, pedido.getValorFinal());
+                sentenca.setFloat(10, pedido.getTributoTotal());
+                sentenca.setInt(11, pedido.getId());
                 sentenca.executeUpdate();
 
                 System.out.println("Pedido atualizado com sucesso!");
@@ -212,6 +223,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     pedido.setDescontoTotal(resultado.getFloat("desconto_total"));
                     pedido.setValorTotalBase(resultado.getFloat("valor_total_base"));
                     pedido.setValorFinal(resultado.getFloat("valor_final"));
+                    pedido.setTributoTotal(resultado.getFloat("tributo_total"));
 
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
@@ -280,7 +292,8 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
         float valorFinal = 0.0f;
         try {
             pedido.setDescontoTotal(calcularDescontoInsumo(pedido) + calcularDescontoMedico(pedido));
-            valorFinal = pedido.getValorTotalBase() * (1 -  pedido.getDescontoTotal() + calcularTributo(pedido));
+            pedido.setTributoTotal(calcularTributo(pedido));
+            valorFinal = pedido.getValorTotalBase() * (1 -  pedido.getDescontoTotal() + pedido.getTributoTotal());
             
         } catch (Exception e) {
             System.out.println("Erro ao calcular valor total: " + e.getMessage());
@@ -364,6 +377,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     pedido.setDescontoTotal(resultado.getFloat("desconto_total"));
                     pedido.setValorTotalBase(resultado.getFloat("valor_total_base"));
                     pedido.setValorFinal(resultado.getFloat("valor_final"));
+                    pedido.setTributoTotal(resultado.getFloat("tributo_total"));
 
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
@@ -385,7 +399,13 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
 
     @Override
     public void retirarPedido(Pedido pedido) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        pedido.setStatus(StatusPedido.CONCLUIDO);
+        atualizarPedido(pedido);
+        ControllerProduto controllerProduto = new ControllerProduto();
+        for(Produto produto : pedido.getProdutos()){
+            produto.setColetado(true);
+            controllerProduto.atualizarProduto(produto);
+        }
     }
     
 }

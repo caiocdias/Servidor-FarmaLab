@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
+import model.Produto;
 import model.Venda;
 import model.enums.StatusPedido;
 import util.Conexao;
@@ -206,7 +207,28 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
 
     @Override
     public String imprimirNotaFiscal(Venda venda) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String produtos = new String();
+        for(Produto produto : venda.getPedido().getProdutos()){
+            produtos += produto.getTipo_produto().getNome() + " .......... " + produto.getTipo_produto().getValor_base() + "\n";
+            
+        }
+        
+        String nf = "NOTA FISCAL\n\n"
+                + "Nº: "+venda.getNota_fiscal().getNum_nota()+"\n"
+                + "Data de Emissão: "+venda.getNota_fiscal().getData_emissao()+"\n\n"
+                + "DADOS DO CLIENTE:\n"
+                + "Nome: "+venda.getPedido().getCliente().getNome()+"\n"
+                + "CPF:"+venda.getPedido().getCliente().getCpf()+"\n\n"
+                + "PRODUTOS:\n"
+                + produtos
+                + "__________________\n\n"
+                + "   Valor Total: "+venda.getPedido().getValorTotalBase()+"\n"
+                + " + Tributos: "+venda.getPedido().getTributoTotal()+"\n"
+                + " - Descontos Totais: "+venda.getPedido().getDescontoTotal()+"\n"
+                + "__________________\n\n"
+                + "   Valor Final: "+venda.getPedido().getValorFinal();
+        
+        return nf;
     }
     
 }

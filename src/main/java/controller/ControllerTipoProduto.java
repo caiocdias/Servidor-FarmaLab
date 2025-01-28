@@ -30,13 +30,14 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO tipo_produto (nome, instrucoes, habilitado, intrucoes) VALUES (?, ?, ?, ?)";
+                String sql = "INSERT INTO tipo_produto (nome, instrucoes, valor_base, habilitado, intrucoes) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement stmtTipoProduto = conexao.prepareStatement(sql);
 
                 stmtTipoProduto.setString(1, tipoProduto.getNome());
                 stmtTipoProduto.setString(2, tipoProduto.getInstrucoes());
-                stmtTipoProduto.setBoolean(3, tipoProduto.isHabilitado());
-                stmtTipoProduto.setString(4, tipoProduto.getInstrucoes());
+                stmtTipoProduto.setFloat(3, tipoProduto.getValor_base());
+                stmtTipoProduto.setBoolean(4, tipoProduto.isHabilitado());
+                stmtTipoProduto.setString(5, tipoProduto.getInstrucoes());
                 stmtTipoProduto.executeUpdate();
                 
                 ResultSet rs = stmtTipoProduto.getGeneratedKeys();
@@ -73,13 +74,14 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "UPDATE tipo_produto SET nome = ?, instrucoes = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sql = "UPDATE tipo_produto SET nome = ?, instrucoes = ?, valor_base = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
 
                 stmt.setString(1, tipoProduto.getNome());
                 stmt.setString(2, tipoProduto.getInstrucoes());
-                stmt.setBoolean(3, tipoProduto.isHabilitado());
-                stmt.setInt(4, tipoProduto.getId());
+                stmt.setFloat(3, tipoProduto.getValor_base());
+                stmt.setBoolean(4, tipoProduto.isHabilitado());
+                stmt.setInt(5, tipoProduto.getId());
 
                 int linhasAfetadas = stmt.executeUpdate();
 
@@ -160,6 +162,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                     tipoProduto.setId(resultado.getInt("id"));
                     tipoProduto.setNome(resultado.getString("nome"));
                     tipoProduto.setInstrucoes(resultado.getString("instrucoes"));
+                    tipoProduto.setValor_base(resultado.getFloat("valor_base"));
                     tipoProduto.setHabilitado(resultado.getBoolean("habilitado"));
                     tipoProduto.setTipo_insumos(tipoInsumos);
                     return tipoProduto;
@@ -245,6 +248,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                         resultado.getInt("id"),
                         resultado.getString("nome"),
                         resultado.getString("instrucoes"),
+                        resultado.getFloat("valor_base"),
                         resultado.getBoolean("habilitado"),
                         resultado.getTimestamp("created_at"),
                         resultado.getTimestamp("updated_at"),

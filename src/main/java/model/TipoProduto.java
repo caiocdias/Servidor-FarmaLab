@@ -20,16 +20,18 @@ public class TipoProduto implements Serializable {
     private boolean habilitado;
     private Timestamp created_at;
     private Timestamp updated_at;
+    private float valor_base;
     private List<TipoInsumo> tipo_insumos = new ArrayList<>();
     
     public TipoProduto(){
         
     }
     
-    public TipoProduto(int id, String nome, String instrucoes, boolean habilitado, Timestamp created_at, Timestamp updated_at, List<TipoInsumo> tipo_insumos){
+    public TipoProduto(int id, String nome, String instrucoes, float valor_base, boolean habilitado, Timestamp created_at, Timestamp updated_at, List<TipoInsumo> tipo_insumos){
         setId(id);
         setNome(nome);
         setInstrucoes(instrucoes);
+        setValor_base(valor_base);
         setHabilitado(habilitado);
         setCreated_at(created_at);
         setUpdated_at(updated_at);
@@ -90,5 +92,13 @@ public class TipoProduto implements Serializable {
 
     public void setTipo_insumos(List<TipoInsumo> tipo_insumos) {
         this.tipo_insumos = tipo_insumos;
+    }
+
+    public float getValor_base() {
+        return valor_base;
+    }
+
+    public void setValor_base(float valor_base) {
+        this.valor_base = valor_base;
     }
 }

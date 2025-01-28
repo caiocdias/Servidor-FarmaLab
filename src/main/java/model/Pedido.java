@@ -27,6 +27,7 @@ public class Pedido implements Serializable {
     private Unidade unidade;
     private float descontoTotal;
     private float valorTotalBase;
+    private float tributoTotal;
     private float valorFinal;
     private List<Produto> produtos = new ArrayList<>();
     
@@ -34,7 +35,7 @@ public class Pedido implements Serializable {
         
     }
     
-    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, boolean pronta_entrega, float descontoTotal,float valorTotalBase,float valorFinal, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario, Prescricao prescricao, Unidade unidade, List<Produto> produtos) {
+    public Pedido(int id, StatusPedido status_pedido, boolean habilitado, boolean pronta_entrega, float descontoTotal,float valorTotalBase,float valorFinal, float tributoTotal, Timestamp created_at, Timestamp updated_at, Cliente cliente, Funcionario funcionario, Prescricao prescricao, Unidade unidade, List<Produto> produtos) {
         setId(id);
         setStatus(status);
         setHabilitado(habilitado);
@@ -48,6 +49,7 @@ public class Pedido implements Serializable {
         setDescontoTotal(descontoTotal);
         setValorTotalBase(valorTotalBase);
         setValorFinal(valorFinal);
+        setTributoTotal(tributoTotal);
         setProdutos(produtos);
     }
     
@@ -166,6 +168,14 @@ public class Pedido implements Serializable {
 
     public void setProdutos(List<Produto> produtos) {
         this.produtos = produtos;
+    }
+
+    public float getTributoTotal() {
+        return tributoTotal;
+    }
+
+    public void setTributoTotal(float tributoTotal) {
+        this.tributoTotal = tributoTotal;
     }
     
 }
