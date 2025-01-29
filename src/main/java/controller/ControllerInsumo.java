@@ -28,11 +28,11 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO insumo (quant, data_validade, habilitado, created_at, update_at) VALUES (?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO insumo (quant, data_validade, habilitado) VALUES (?, ?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setFloat(1, insumo.getQuant());
                 stmt.setTimestamp(2, insumo.getData_validade());
-                
+                stmt.setBoolean(3, insumo.isHabilitado());
                 stmt.executeUpdate();
                 System.out.println("Insumo inseridao com sucesso!");
             } else {        
@@ -125,6 +125,7 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
                     insumo.setId(rs.getInt("id"));
                     insumo.setQuant(rs.getFloat("quant"));
                     insumo.setData_validade(rs.getTimestamp("data_validade"));
+                    insumo.setHabilitado(rs.getBoolean("habilitado"));
                     
                     return insumo;
                 } else {
