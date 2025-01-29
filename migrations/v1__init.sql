@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS funcionario (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    pessoa_id INT NOT NULL PRIMARY KEY,
+    id_pessoa INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_funcionario_pessoa
-        FOREIGN KEY (pessoa_id)
+        FOREIGN KEY (id_pessoa)
             REFERENCES pessoa(id)
             ON DELETE CASCADE
             ON UPDATE CASCADE
@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS cliente (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    pessoa_id INT NOT NULL PRIMARY KEY,
+    id_pessoa INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_cliente_pessoa
-        FOREIGN KEY (pessoa_id)
+        FOREIGN KEY (id_pessoa)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -47,9 +47,9 @@ CREATE TABLE IF NOT EXISTS medico_parceiro (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    pessoa_id INT NOT NULL PRIMARY KEY,
+    id_pessoa INT NOT NULL PRIMARY KEY,
     CONSTRAINT fk_medico_parceiro_pessoa
-        FOREIGN KEY (pessoa_id)
+        FOREIGN KEY (id_pessoa)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -60,9 +60,9 @@ CREATE TABLE IF NOT EXISTS auditoria (
     movimento VARCHAR(255),
     data TIMESTAMP,
 
-    funcionario_id INT NOT NULL,
+    id_funcionario INT NOT NULL,
     CONSTRAINT fk_auditoria_funcionario
-        FOREIGN KEY (funcionario_id)
+        FOREIGN KEY (id_funcionario)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -89,9 +89,9 @@ CREATE TABLE IF NOT EXISTS estoque (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    unidade_id INT NOT NULL,
+    id_unidade INT NOT NULL,
     CONSTRAINT fk_estoque_unidade
-        FOREIGN KEY (unidade_id)
+        FOREIGN KEY (id_unidade)
         REFERENCES unidade(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -119,16 +119,16 @@ CREATE TABLE IF NOT EXISTS tipo_produto (
 CREATE TABLE IF NOT EXISTS tipo_insumo_tipo_produto (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
-    tipo_insumo_id INT NOT NULL,
+    id_tipo_insumo INT NOT NULL,
     CONSTRAINT fk_tipo_insumo_tipo_produto_tipo_insumo
-        FOREIGN KEY (tipo_insumo_id)
+        FOREIGN KEY (id_tipo_insumo)
         REFERENCES tipo_insumo(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    tipo_produto_id INT NOT NULL,
+    id_tipo_produto INT NOT NULL,
     CONSTRAINT fk_tipo_insumo_tipo_produto_tipo_produto
-        FOREIGN KEY (tipo_produto_id)
+        FOREIGN KEY (id_tipo_produto)
         REFERENCES tipo_produto(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -142,16 +142,16 @@ CREATE TABLE IF NOT EXISTS insumo (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    estoque_id INT NOT NULL,
+    id_estoque INT NOT NULL,
     CONSTRAINT fk_insumo_estoque
-        FOREIGN KEY (estoque_id)
+        FOREIGN KEY (id_estoque)
         REFERENCES estoque(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    tipo_insumo_id INT NOT NULL,
+    id_tipo_insumo INT NOT NULL,
     CONSTRAINT fk_insumo_tipo_insumo
-        FOREIGN KEY (tipo_insumo_id)
+        FOREIGN KEY (id_tipo_insumo)
         REFERENCES tipo_insumo(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -179,16 +179,16 @@ CREATE TABLE IF NOT EXISTS nota_fiscal (
 CREATE TABLE IF NOT EXISTS tributo_nota_fiscal (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
-    tributo_id INT NOT NULL,
+    id_tributo INT NOT NULL,
     CONSTRAINT fk_tributo_nota_fiscal_tributo
-        FOREIGN KEY (tributo_id)
+        FOREIGN KEY (id_tributo)
         REFERENCES tributo(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    nota_fiscal_id INT NOT NULL,
+    id_nota_fiscal INT NOT NULL,
     CONSTRAINT fk_tributo_nota_fiscal_nota_fiscal
-        FOREIGN KEY (nota_fiscal_id)
+        FOREIGN KEY (id_nota_fiscal)
         REFERENCES nota_fiscal(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -200,9 +200,9 @@ CREATE TABLE IF NOT EXISTS prescricao (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    cliente_id INT NOT NULL,
+    id_cliente INT NOT NULL,
     CONSTRAINT fk_prescricao_cliente
-        FOREIGN KEY (cliente_id)
+        FOREIGN KEY (id_cliente)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -220,30 +220,30 @@ CREATE TABLE IF NOT EXISTS pedido (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    cliente_id INT NOT NULL,
+    id_cliente INT NOT NULL,
     CONSTRAINT fk_pedido_cliente
-        FOREIGN KEY (cliente_id)
+        FOREIGN KEY (id_cliente)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    funcionario_id INT NOT NULL,
+    id_funcionario INT NOT NULL,
     CONSTRAINT fk_pedido_funcionario
-        FOREIGN KEY (funcionario_id)
+        FOREIGN KEY (id_funcionario)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 	
-    prescricao_id INT NOT NULL,
+    id_prescricao INT NOT NULL,
     CONSTRAINT fk_pedido_prescricao
-        FOREIGN KEY (prescricao_id)
+        FOREIGN KEY (id_prescricao)
         REFERENCES prescricao(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    unidade_id INT NOT NULL,
+    id_unidade INT NOT NULL,
     CONSTRAINT fk_pedido_unidade
-        FOREIGN KEY (unidade_id)
+        FOREIGN KEY (id_unidade)
         REFERENCES unidade(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -255,23 +255,23 @@ CREATE TABLE IF NOT EXISTS venda (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     habilitado BOOLEAN,
 
-    unidade_id INT NOT NULL,
+    id_unidade INT NOT NULL,
     CONSTRAINT fk_venda_unidade
-        FOREIGN KEY (unidade_id)
+        FOREIGN KEY (id_unidade)
         REFERENCES unidade(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    pedido_id INT NOT NULL,
+    id_pedido INT NOT NULL,
     CONSTRAINT fk_venda_pedido
-        FOREIGN KEY (pedido_id)
+        FOREIGN KEY (id_pedido)
         REFERENCES pedido(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    nota_fiscal_id INT NOT NULL,
+    id_nota_fiscal INT NOT NULL,
     CONSTRAINT fk_venda_nota_fiscal
-        FOREIGN KEY (nota_fiscal_id)
+        FOREIGN KEY (id_nota_fiscal)
         REFERENCES nota_fiscal(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -286,37 +286,37 @@ CREATE TABLE IF NOT EXISTS produto (
     pronta_entrega BOOLEAN,
     coletado BOOLEAN,
 
-    pedido_producao_id INT,
+    id_pedido_producao INT,
     CONSTRAINT fk_produto_pedido_producao
-        FOREIGN KEY (pedido_producao_id)
+        FOREIGN KEY (id_pedido_producao)
         REFERENCES pedido(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    pedido_venda_id INT,
+    id_pedido_venda INT,
     CONSTRAINT fk_produto_pedido_venda
-        FOREIGN KEY (pedido_venda_id)
+        FOREIGN KEY (id_pedido_venda)
         REFERENCES pedido(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    venda_id INT,
+    id_venda INT,
     CONSTRAINT fk_produto_venda
-        FOREIGN KEY (venda_id)
+        FOREIGN KEY (id_venda)
         REFERENCES venda(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    tipo_produto_id INT NOT NULL,
+    id_tipo_produto INT NOT NULL,
     CONSTRAINT fk_produto_tipo_produto
-        FOREIGN KEY (tipo_produto_id)
+        FOREIGN KEY (id_tipo_produto)
         REFERENCES tipo_produto(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    estoque_id INT NOT NULL,
+    id_estoque INT NOT NULL,
     CONSTRAINT fk_produto_estoque
-        FOREIGN KEY (estoque_id)
+        FOREIGN KEY (id_estoque)
         REFERENCES estoque(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -332,23 +332,23 @@ CREATE TABLE IF NOT EXISTS orcamento (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    unidade_id INT NOT NULL,
+    id_unidade INT NOT NULL,
     CONSTRAINT fk_orcamento_unidade
-        FOREIGN KEY (unidade_id)
+        FOREIGN KEY (id_unidade)
         REFERENCES unidade(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    cliente_id INT NOT NULL,
+    id_cliente INT NOT NULL,
     CONSTRAINT fk_orcamento_cliente
-        FOREIGN KEY (cliente_id)
+        FOREIGN KEY (id_cliente)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    funcionario_id INT NOT NULL,
+    id_funcionario INT NOT NULL,
     CONSTRAINT fk_orcamento_funcionario
-        FOREIGN KEY (funcionario_id)
+        FOREIGN KEY (id_funcionario)
         REFERENCES pessoa(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE

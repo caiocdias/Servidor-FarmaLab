@@ -32,7 +32,7 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
                 Connection conexao = Conexao.con;
                 
                 if (conexao != null) {
-                    String sqlEstoque = "INSERT INTO estoque (nome, habilitado, unidade_id) VALUES (?, ?, ?)";
+                    String sqlEstoque = "INSERT INTO estoque (nome, habilitado, id_unidade) VALUES (?, ?, ?)";
                     PreparedStatement stmtEstoque = conexao.prepareStatement(sqlEstoque, Statement.RETURN_GENERATED_KEYS);
                     stmtEstoque.setString(1, estoque.getNome());
                     stmtEstoque.setBoolean(2, estoque.isHabilitado());
@@ -122,7 +122,7 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
                 if (rs.next()) {
                     estoque = new Estoque(
                             rs.getInt("id"),
-                            controllerUnidade.obterUnidade(rs.getInt("unidade_id")),
+                            controllerUnidade.obterUnidade(rs.getInt("id_unidade")),
                             rs.getString("nome"),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),
@@ -151,7 +151,7 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
 
 
             if (conexao != null) {
-                String sql = "SELECT id, nome, unidade_id, habilitado, created_at, updated_at FROM estoque WHERE nome LIKE ?";
+                String sql = "SELECT id, nome, id_unidade, habilitado, created_at, updated_at FROM estoque WHERE nome LIKE ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 
@@ -160,7 +160,7 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
                 while (rs.next()) {
                     Estoque estoque = new Estoque(
                             rs.getInt("id"),
-                            controllerUnidade.obterUnidade(rs.getInt("unidade_id")),
+                            controllerUnidade.obterUnidade(rs.getInt("id_unidade")),
                             rs.getString("nome"),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),

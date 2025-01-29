@@ -44,16 +44,16 @@ public class Server {
             System.out.println("Serviço de Cliente registrado com sucesso!");
             
             InterfaceEstoque estoqueStub = new ControllerEstoque();
-            Naming.rebind("//localhost/Funcionario", estoqueStub);
-            System.out.println("Serviço de Funcionario registrado com sucesso!");
+            Naming.rebind("//localhost/Estoque", estoqueStub);
+            System.out.println("Serviço de Estoque registrado com sucesso!");
 
             InterfaceFuncionario funcionarioStub = new ControllerFuncionario();
             Naming.rebind("//localhost/Funcionario", funcionarioStub);
             System.out.println("Serviço de Funcionario registrado com sucesso!");
             
             InterfaceInsumo insumoStub = new ControllerInsumo();
-            Naming.rebind("//localhost/Funcionario", insumoStub);
-            System.out.println("Serviço de Funcionario registrado com sucesso!");
+            Naming.rebind("//localhost/Insumo", insumoStub);
+            System.out.println("Serviço de Insumo registrado com sucesso!");
 
             InterfaceMedicoParceiro medicoParceiroStub = new ControllerMedicoParceiro();
             Naming.rebind("//localhost/MedicoParceiro", medicoParceiroStub);
@@ -64,40 +64,40 @@ public class Server {
             System.out.println("Serviço de Nota Fiscal registrado com sucesso!");
             
             InterfaceOrcamento orcamentoStub = new ControllerOrcamento();
-            Naming.rebind("//localhost/NotaFiscal", orcamentoStub);
-            System.out.println("Serviço de Nota Fiscal registrado com sucesso!");
+            Naming.rebind("//localhost/Orcamento", orcamentoStub);
+            System.out.println("Serviço de Orcamento registrado com sucesso!");
             
             InterfacePedido pedidoStub = new ControllerPedido();
-            Naming.rebind("//localhost/NotaFiscal", pedidoStub);
-            System.out.println("Serviço de Nota Fiscal registrado com sucesso!");
+            Naming.rebind("//localhost/Pedido", pedidoStub);
+            System.out.println("Serviço de Pedido registrado com sucesso!");
             
             InterfacePrescricao prescricaoStub = new ControllerPrescricao();
             Naming.rebind("//localhost/Prescricao", prescricaoStub);
             System.out.println("Serviço de Prescricao registrado com sucesso!");
             
             InterfaceProduto produtoStub = new ControllerProduto();
-            Naming.rebind("//localhost/Prescricao", produtoStub);
-            System.out.println("Serviço de Prescricao registrado com sucesso!");
+            Naming.rebind("//localhost/Produto", produtoStub);
+            System.out.println("Serviço de Produto registrado com sucesso!");
             
             InterfaceTipoInsumo tipoInsumoStub = new ControllerTipoInsumo();
-            Naming.rebind("//localhost/Prescricao", tipoInsumoStub);
-            System.out.println("Serviço de Prescricao registrado com sucesso!");
+            Naming.rebind("//localhost/TipoInsumo", tipoInsumoStub);
+            System.out.println("Serviço de TipoInsumo registrado com sucesso!");
             
             InterfaceTipoProduto tipoProdutoStub = new ControllerTipoProduto();
-            Naming.rebind("//localhost/Prescricao", tipoProdutoStub);
-            System.out.println("Serviço de Prescricao registrado com sucesso!");
+            Naming.rebind("//localhost/TipoProduto", tipoProdutoStub);
+            System.out.println("Serviço de TipoProduto registrado com sucesso!");
             
             InterfaceTributo TributoStub = new ControllerTributo();
-            Naming.rebind("//localhost/Orcamento", TributoStub);
-            System.out.println("Serviço de Orcamento registrado com sucesso!");
+            Naming.rebind("//localhost/Tributo", TributoStub);
+            System.out.println("Serviço de Tributo registrado com sucesso!");
             
             InterfaceUnidade UnidadeStub = new ControllerUnidade();
-            Naming.rebind("//localhost/Orcamento", UnidadeStub);
-            System.out.println("Serviço de Orcamento registrado com sucesso!");
+            Naming.rebind("//localhost/Unidade", UnidadeStub);
+            System.out.println("Serviço de Unidade registrado com sucesso!");
             
             InterfaceVenda VendaStub = new ControllerVenda();
-            Naming.rebind("//localhost/Orcamento", VendaStub);
-            System.out.println("Serviço de Orcamento registrado com sucesso!");
+            Naming.rebind("//localhost/Venda", VendaStub);
+            System.out.println("Serviço de Venda registrado com sucesso!");
 
             System.out.println("Servidor RMI pronto e aguardando conexões...");
         } catch (Exception e) {

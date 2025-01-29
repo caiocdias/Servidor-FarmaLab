@@ -31,7 +31,7 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO tipo de insumo (quant, data_validade,) VALUES (?, ?)";
+                String sql = "INSERT INTO insumo (quant, data_validade,) VALUES (?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setFloat(1, insumo.getQuant());
                 stmt.setTimestamp(2, insumo.getData_validade());
@@ -153,7 +153,7 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
 
             if (conexao != null) {
                 
-                String sql = "SELECT tipo_insumo_id, SUM(quant) AS total_quant FROM insumo WHERE quant > 25 AND DATEDIFF(data_validade, CURRENT_DATE()) < 30 GROUP BY tipo_insumo_id;";
+                String sql = "SELECT id_tipo_insumo, SUM(quant) AS total_quant FROM insumo WHERE quant > 25 AND DATEDIFF(data_validade, CURRENT_DATE()) < 30 GROUP BY id_tipo_insumo;";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 String insumosIds = new String();
                 
