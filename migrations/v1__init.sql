@@ -176,24 +176,6 @@ CREATE TABLE IF NOT EXISTS nota_fiscal (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS tributo_nota_fiscal (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    id_tributo INT NOT NULL,
-    CONSTRAINT fk_tributo_nota_fiscal_tributo
-        FOREIGN KEY (id_tributo)
-        REFERENCES tributo(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-
-    id_nota_fiscal INT NOT NULL,
-    CONSTRAINT fk_tributo_nota_fiscal_nota_fiscal
-        FOREIGN KEY (id_nota_fiscal)
-        REFERENCES nota_fiscal(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS prescricao (
     id INT AUTO_INCREMENT PRIMARY KEY,
     crm VARCHAR(13),

@@ -33,7 +33,7 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
                 Connection conexao = Conexao.con;
 
                 if (conexao != null) {
-                    String sqlVenda = "INSERT INTO venda (unidade_id, pedido_id, nota_fiscal_id) VALUES (?, ?, ?)";
+                    String sqlVenda = "INSERT INTO venda (id_unidade, id_pedido, id_nota_fiscal) VALUES (?, ?, ?)";
                     PreparedStatement stmtVenda = conexao.prepareStatement(sqlVenda, Statement.RETURN_GENERATED_KEYS);
                     stmtVenda.setInt(1, venda.getUnidade().getId());
                     stmtVenda.setInt(2, venda.getPedido().getId());
@@ -61,7 +61,7 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sqlVenda = "UPDATE venda SET unidade_id = ?, pedido_id = ?, nota_fiscal_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sqlVenda = "UPDATE venda SET id_unidade = ?, id_pedido = ?, id_nota_fiscal = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmtVenda = conexao.prepareStatement(sqlVenda, Statement.RETURN_GENERATED_KEYS);
                     stmtVenda.setInt(1, venda.getUnidade().getId());
                     stmtVenda.setInt(2, venda.getPedido().getId());
@@ -120,7 +120,7 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
             ControllerPedido controllerPedido = new ControllerPedido(); 
 
             if (conexao != null) {
-                String sql = "SELECT id, unidade_id, nota_fiscal_id, pedido_id, habilitado, created_at, updated_at FROM venda WHERE id = ?";
+                String sql = "SELECT id, id_unidade, id_nota_fiscal, id_pedido, habilitado, created_at, updated_at FROM venda WHERE id = ?";
                 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, id);
@@ -129,9 +129,9 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
                 if (rs.next()) {
                     venda = new Venda(
                             rs.getInt("id"),
-                            controllerUnidade.obterUnidade(rs.getInt("unidade_id")),
-                            controllerNotaFiscal.obterNotaFiscal(rs.getInt("nota_fiscal_id")),
-                            controllerPedido.obterPedido(rs.getInt("pedido_id")),
+                            controllerUnidade.obterUnidade(rs.getInt("id_unidade")),
+                            controllerNotaFiscal.obterNotaFiscal(rs.getInt("id_nota_fiscal")),
+                            controllerPedido.obterPedido(rs.getInt("id_pedido")),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),
                             rs.getTimestamp("updated_at")
@@ -161,12 +161,12 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
 
             if (conexao != null) {
                 String sql = "SELECT v.*"
-                        + "FROM venda v INNER JOIN pedido p ON p.id = v.pedido_id WHERE 1=1";
+                        + "FROM venda v INNER JOIN pedido p ON p.id = v.id_pedido WHERE 1=1";
                 if (cliente_id != null) {
-                    sql += " AND p.cliente_id = ?";
+                    sql += " AND p.id_cliente = ?";
                 }
                 if (funcionario_id != null) {
-                    sql += " AND p.funcionario_id = ?";
+                    sql += " AND p.id_funcionario = ?";
                 }
 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -184,9 +184,9 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
                 while (rs.next()) {
                     Venda venda = new Venda(
                             rs.getInt("id"),
-                            controllerUnidade.obterUnidade(rs.getInt("unidade_id")),
-                            controllerNotaFiscal.obterNotaFiscal(rs.getInt("nota_fiscal_id")),
-                            controllerPedido.obterPedido(rs.getInt("pedido_id")),
+                            controllerUnidade.obterUnidade(rs.getInt("id_unidade")),
+                            controllerNotaFiscal.obterNotaFiscal(rs.getInt("id_nota_fiscal")),
+                            controllerPedido.obterPedido(rs.getInt("id_pedido")),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),
                             rs.getTimestamp("updated_at")

@@ -46,7 +46,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                     idTipoProduto = rs.getInt(1);
                 }
 
-                String sqlTipoInsumoProduto = "INSERT INTO tipo_insumo_produto (id_tipo_insumo, id_tipo_produto) VALUES (?, ?)";
+                String sqlTipoInsumoProduto = "INSERT INTO tipo_insumo_tipo_produto (id_tipo_insumo, id_tipo_produto) VALUES (?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sqlTipoInsumoProduto);
                 
                 for (TipoInsumo tipoInsumo : tipoProduto.getTipo_insumos()) {
