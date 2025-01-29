@@ -6,11 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-
 import model.Insumo;
-import model.TipoInsumo;
 import util.Conexao;
 
 /**
@@ -31,7 +28,7 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO insumo (quant, data_validade,) VALUES (?, ?)";
+                String sql = "INSERT INTO insumo (quant, data_validade, habilitado, created_at, update_at) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setFloat(1, insumo.getQuant());
                 stmt.setTimestamp(2, insumo.getData_validade());
@@ -56,12 +53,12 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "UPDATE tipo de insumo SET quant = ?, data_validade = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sql = "UPDATE tipo de insumo SET quant = ?, data_validade = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setFloat(1, insumo.getQuant());
                 stmt.setTimestamp(2, insumo.getData_validade());
-                
-                stmt.setInt(3, insumo.getId());
+                stmt.setBoolean(3, insumo.isHabilitado());
+                stmt.setInt(4, insumo.getId());
 
                 int linhasAfetadas = stmt.executeUpdate();
 
