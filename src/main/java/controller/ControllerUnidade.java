@@ -240,7 +240,7 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                     List<Integer> listTributosIds = new ArrayList<>();
                     List<Tributo> tributos = new ArrayList<>();
                     
-                    String sql2 = "SELECT tributo_id FROM unidade_tributo WHERE unidade_id = ?";
+                    String sql2 = "SELECT id_tributo FROM unidade_tributo WHERE id_unidade = ?";
                     PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                     sentenca2.setInt(1, resultado.getInt("id"));
                     ResultSet resultado2 = sentenca2.executeQuery();
