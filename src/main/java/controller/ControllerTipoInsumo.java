@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import util.Conexao;
 import model.TipoInsumo;
-import model.TipoProduto;
 
 /**
  *

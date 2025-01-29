@@ -120,10 +120,10 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     String statusString = resultado.getString("status");
                     pedido.setStatus(StatusPedido.valueOf(statusString));
 
-                    pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
-                    pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
-                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
-                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
+                    pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
+                    pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
+                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("id_prescricao"), null));
+                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
 
                      return pedido;
                 } else {
@@ -227,8 +227,8 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
 
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
-                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
-                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
+                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("id_prescricao"), null));
+                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
                     
                     pedidos.add(pedido);
                 }
@@ -381,8 +381,8 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
 
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
-                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("prescricao_id"), null));
-                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
+                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("id_prescricao"), null));
+                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
                     
                     pedidos.add(pedido);
                 }

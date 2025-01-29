@@ -146,10 +146,10 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     produto.setColetado(resultado.getBoolean("coletado"));
                     produto.setHabilitado(resultado.getBoolean("habilitado"));
                     
-                    produto.setPedido_venda(controllerPedido.obterPedido(resultado.getInt("pedido_id")));
-                    produto.setPedido_producao(controllerPedido.obterPedido(resultado.getInt("pedido_id")));
-                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(resultado.getInt("pedido_id")));
-                    produto.setEstoque(controllerEstoque.obterEstoque(resultado.getInt("pedido_id")));
+                    produto.setPedido_venda(controllerPedido.obterPedido(resultado.getInt("id_pedido_venda")));
+                    produto.setPedido_producao(controllerPedido.obterPedido(resultado.getInt("id_pedido_producao")));
+                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(resultado.getInt("id_tipo_produto")));
+                    produto.setEstoque(controllerEstoque.obterEstoque(resultado.getInt("id_estoque")));
                     
                     return produto;
                 } else {
@@ -194,10 +194,10 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     produto.setCreated_at(rs.getTimestamp("created_at"));
                     produto.setUpdated_at(rs.getTimestamp("updated_at"));
 
-                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("pedido_id")));
-                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("pedido_id")));
-                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("tipo_produto_id")));     
-                    produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("estoque_id")));   
+                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("id_pedido_venda")));
+                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("id_pedido_producao")));
+                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("id_tipo_produto")));     
+                    produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("id_estoque")));   
                     
                     produtos.add(produto);
                 }
@@ -235,10 +235,10 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     produto.setColetado(rs.getBoolean("coletado"));
                     produto.setHabilitado(rs.getBoolean("habilitado"));
                     
-                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("pedido_id")));
-                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("pedido_id")));
-                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("pedido_id")));
-                    produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("pedido_id")));
+                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("id_pedido_venda")));
+                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("id_pedido_producao")));
+                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("id_tipo_produto")));
+                    produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("id_estoque")));
                 } else {
                     System.out.println("Produto não disponivel em estoque.");
                 }

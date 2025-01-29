@@ -30,7 +30,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO tipo_produto (nome, instrucoes, valor_base, habilitado, intrucoes) VALUES (?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO tipo_produto (nome, instrucoes, valor_base, habilitado, instrucoes) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement stmtTipoProduto = conexao.prepareStatement(sql);
 
                 stmtTipoProduto.setString(1, tipoProduto.getNome());
@@ -146,13 +146,13 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                 List<TipoInsumo> tipoInsumos = new ArrayList<>();
                 List<Integer> tipoInsumosIds = new ArrayList<>();
             
-                String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE tipo_produto_id = ?";
+                String sql2 = "SELECT id_tipo_insumo FROM tipo_insumo_produto WHERE id_tipo_produto = ?";
                 PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                 sentenca2.setInt(1, id);
                 ResultSet resultado2 = sentenca2.executeQuery();
                 
                 while(resultado2.next()){
-                    tipoInsumosIds.add(resultado2.getInt("tipo_insumo_id"));
+                    tipoInsumosIds.add(resultado2.getInt("id_tipo_insumo"));
                 }
                 
                 ControllerTipoInsumo controllerTipoInsumo = new ControllerTipoInsumo();
@@ -232,13 +232,13 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                     List<Integer> tipoInsumosIds = new ArrayList<>();
                     List<TipoInsumo> tipoInsumos = new ArrayList<>();
                     
-                    String sql2 = "SELECT tipo_insumo_id FROM tipo_insumo_produto WHERE tipo_produto_id = ?";
+                    String sql2 = "SELECT id_tipo_insumo FROM tipo_insumo_produto WHERE id_tipo_produto = ?";
                     PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                     sentenca2.setInt(1, resultado.getInt("id"));
                     ResultSet resultado2 = sentenca2.executeQuery();
                     
                     while(resultado2.next()){
-                        tipoInsumosIds.add(resultado2.getInt("tipo_insumo_id"));
+                        tipoInsumosIds.add(resultado2.getInt("id_tipo_insumo"));
                     }
 
                     ControllerTipoInsumo controllerTipoInsumo = new ControllerTipoInsumo();

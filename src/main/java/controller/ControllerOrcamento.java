@@ -81,9 +81,9 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                     String statusString = resultado.getString("status");
                     orcamento.setStatus(StatusOrcamento.valueOf(statusString));
 
-                    orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
-                    orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
-                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
+                    orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
+                    orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
+                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
 
                      return orcamento;
                 } else {
@@ -180,9 +180,9 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                     String statusString = resultado.getString("status");
                     orcamento.setStatus(StatusOrcamento.valueOf(statusString));
 
-                    orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("cliente_id"), null));
-                    orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("funcionario_id"), null));
-                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("unidade_id")));
+                    orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
+                    orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
+                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
                     
                     orcamentos.add(orcamento);
                 }

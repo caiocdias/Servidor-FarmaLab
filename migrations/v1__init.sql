@@ -353,3 +353,21 @@ CREATE TABLE IF NOT EXISTS orcamento (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS unidade_tributo (
+    id  INT AUTO_INCREMENT PRIMARY KEY,
+
+    id_tributo INT NOT NULL,
+    CONSTRAINT fk_unidade_tributo_tributo
+        FOREIGN KEY (id_tributo)
+        REFERENCES tributo(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    id_unidade INT NOT NULL,
+    CONSTRAINT fk_unidade_tributo_unidade
+        FOREIGN KEY (id_unidade)
+        REFERENCES unidade(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
