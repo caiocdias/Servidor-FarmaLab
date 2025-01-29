@@ -5,6 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -180,7 +181,46 @@ public class ControllerTributo extends UnicastRemoteObject implements InterfaceT
 
     @Override
     public List<Tributo> obterTributo(List<Integer> ids) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    List<Tributo> tributos = new ArrayList();
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT * FROM tributo WHERE id = ?";
+                PreparedStatement sentenca = conexao.prepareStatement(sql);
+                String tributosIds = new String();
+                for (int i = 0; i < ids.size(); i++) {
+                    String tributoId = ids.get(i).toString();
+                    tributosIds += tributoId;
+                    if (i != tributos.size() - 1) {
+                        tributosIds  += ",";
+                    } 
+                }
+                sentenca.setString(1, tributosIds);
+                ResultSet resultado = sentenca.executeQuery();
+
+                while (resultado.next()) {
+                    Tributo tributo = new Tributo(
+                        resultado.getInt("id"),
+                            resultado.getString("estado"),
+                            resultado.getString("nome_imposto"),
+                            resultado.getFloat("porcentagem"),
+                            resultado.getBoolean("habilitado"),
+                            resultado.getTimestamp("created_at"),
+                            resultado.getTimestamp("updated_at")
+                    );
+                    tributos.add(tributo);
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao obter o tipo de insumo: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return tributos;
     }
     
 }
