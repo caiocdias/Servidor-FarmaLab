@@ -353,3 +353,6 @@ CREATE TABLE IF NOT EXISTS unidade_tributo (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+INSERT INTO pessoa (nome, cpf) VALUES ('ADM','123.456.789-10');
+INSERT INTO funcionario (id_pessoa, cargo, password, habilitado) VALUES ((SELECT id FROM pessoa WHERE cpf = '123.456.789-10'),'Administrador','123456',TRUE);

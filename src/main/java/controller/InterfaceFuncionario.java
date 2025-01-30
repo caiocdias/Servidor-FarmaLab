@@ -16,4 +16,6 @@ public interface InterfaceFuncionario extends Remote {
     Funcionario obterFuncionario(Integer id, String cpf) throws RemoteException;
     
     List<Funcionario> buscarFuncionariosPorNome(String nome) throws RemoteException;
+    
+    boolean autenticarFuncionario(String cpf, String senha) throws RemoteException; 
 }

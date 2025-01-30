@@ -228,4 +228,35 @@ public class ControllerFuncionario extends UnicastRemoteObject implements Interf
         return funcionarios;
     }
 
+    @Override
+    public boolean autenticarFuncionario(String cpf, String senha) throws RemoteException {
+        boolean autenticado = false;
+
+        try {
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
+
+            if (conexao != null) {
+                String sql = "SELECT * FROM funcionario f INNER JOIN pessoa p ON f.id_pessoa = p.id WHERE p.cpf = ? AND f.password = ?";
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setString(1, cpf);
+                stmt.setString(2, senha);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    autenticado = true;
+                }
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao autenticar funcionário: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+
+        return autenticado;
+    }
+
 }
