@@ -161,7 +161,7 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
 
             if (conexao != null) {
                 String sql = "SELECT v.*"
-                        + "FROM venda v INNER JOIN pedido p ON p.id = v.id_pedido WHERE 1=1";
+                        + "FROM venda v INNER JOIN pedido p ON p.id = v.id_pedido WHERE 1=1 AND v.habilitado = 1";
                 if (cliente_id != null) {
                     sql += " AND p.id_cliente = ?";
                 }

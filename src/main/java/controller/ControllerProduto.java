@@ -174,7 +174,7 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT * FROM produto WHERE nome LIKE ?";
+                String sql = "SELECT * FROM produto WHERE nome LIKE ? AND habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 
@@ -221,7 +221,7 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
             Connection conexao = Conexao.con;
             
             if (conexao != null) {
-                String sql = "SELECT * FROM produto WHERE pronta_entrega = 1 AND tipo_produto_id = ? AND pedido_venda is null LIMIT 1";
+                String sql = "SELECT * FROM produto WHERE pronta_entrega = 1 AND habilitado = 1 AND tipo_produto_id = ? AND pedido_venda is null LIMIT 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, idTipoProduto);
                 ResultSet rs = stmt.executeQuery();

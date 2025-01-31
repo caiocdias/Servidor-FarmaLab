@@ -181,7 +181,7 @@ public class ControllerCliente extends UnicastRemoteObject implements InterfaceC
             if (conexao != null) {
                 String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, c.habilitado, c.created_at, c.updated_at "
                         + "FROM pessoa p INNER JOIN cliente c ON p.id = c.id_pessoa "
-                        + "WHERE p.nome LIKE ?";
+                        + "WHERE p.nome LIKE ? AND c.habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 

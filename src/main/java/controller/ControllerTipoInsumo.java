@@ -154,7 +154,7 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT id, nome, quant, habilitado, created_at, updated_at FROM tipo_insumo WHERE nome LIKE ?";
+                String sql = "SELECT id, nome, quant, habilitado, created_at, updated_at FROM tipo_insumo WHERE nome LIKE ? AND habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 

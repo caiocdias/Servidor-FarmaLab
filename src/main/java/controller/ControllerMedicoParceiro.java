@@ -192,7 +192,7 @@ public class ControllerMedicoParceiro extends UnicastRemoteObject implements Int
                 String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, "
                         + "m.crm, m.estado, m.habilitado, m.created_at, m.updated_at "
                         + "FROM pessoa p INNER JOIN medico_parceiro m ON p.id = m.id_pessoa "
-                        + "WHERE p.nome LIKE ?";
+                        + "WHERE p.nome LIKE ? AND m.habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 

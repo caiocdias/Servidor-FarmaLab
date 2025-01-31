@@ -204,7 +204,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT * FROM pedido WHERE id_cliente = ?";
+                String sql = "SELECT * FROM pedido WHERE id_cliente = ? AND habilitado = 1";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, clienteId);
                 ResultSet resultado = sentenca.executeQuery();
@@ -323,7 +323,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT id FROM pedido WHERE status = ?";
+                String sql = "SELECT id FROM pedido WHERE status = ? AND habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, status.getDescricao());
                 ResultSet rs = stmt.executeQuery();

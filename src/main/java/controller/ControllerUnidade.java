@@ -196,7 +196,7 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT id FROM unidade WHERE nome LIKE ?";
+                String sql = "SELECT id FROM unidade WHERE nome LIKE ? AND habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
                 ResultSet rs = stmt.executeQuery();

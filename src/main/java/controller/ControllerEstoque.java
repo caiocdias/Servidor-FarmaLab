@@ -58,10 +58,12 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sqlEstoque = "UPDATE estoque SET nome = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sqlEstoque = "UPDATE estoque SET nome = ?, habilitado = ?, id_unidade = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmtEstoque = conexao.prepareStatement(sqlEstoque, Statement.RETURN_GENERATED_KEYS);
                     stmtEstoque.setString(1, estoque.getNome());
-                    stmtEstoque.setInt(2, estoque.getId());
+                    stmtEstoque.setBoolean(2, estoque.isHabilitado());
+                    stmtEstoque.setInt(3, estoque.getUnidade().getId());
+                    stmtEstoque.setInt(4, estoque.getId());
                     stmtEstoque.executeUpdate();
 
                 System.out.println("Estoque atualizado com sucesso!");
@@ -151,7 +153,7 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
 
 
             if (conexao != null) {
-                String sql = "SELECT id, nome, id_unidade, habilitado, created_at, updated_at FROM estoque WHERE nome LIKE ?";
+                String sql = "SELECT id, nome, id_unidade, habilitado, created_at, updated_at FROM estoque WHERE nome LIKE ? AND habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 

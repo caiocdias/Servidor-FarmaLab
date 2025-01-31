@@ -161,7 +161,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT * FROM orcamento WHERE nome LIKE ?";
+                String sql = "SELECT * FROM orcamento WHERE nome LIKE ? AND habilitado = 1";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setString(1, "%" + nome + "%");
                 ResultSet resultado = sentenca.executeQuery();

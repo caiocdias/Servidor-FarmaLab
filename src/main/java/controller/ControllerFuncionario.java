@@ -194,7 +194,7 @@ public class ControllerFuncionario extends UnicastRemoteObject implements Interf
                 String sql = "SELECT p.id, p.nome, p.cpf, p.endereco, p.telefone, "
                         + "f.cargo, f.password, f.salario, f.habilitado, f.created_at, f.updated_at "
                         + "FROM pessoa p INNER JOIN funcionario f ON p.id = f.id_pessoa "
-                        + "WHERE p.nome LIKE ?";
+                        + "WHERE p.nome LIKE ? AND f.habilitado = 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 

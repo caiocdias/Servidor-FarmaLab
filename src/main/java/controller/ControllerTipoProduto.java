@@ -232,7 +232,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                     List<Integer> tipoInsumosIds = new ArrayList<>();
                     List<TipoInsumo> tipoInsumos = new ArrayList<>();
                     
-                    String sql2 = "SELECT id_tipo_insumo FROM tipo_insumo_produto WHERE id_tipo_produto = ?";
+                    String sql2 = "SELECT id_tipo_insumo FROM tipo_insumo_produto WHERE id_tipo_produto = ? AND habilitado = 1";
                     PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                     sentenca2.setInt(1, resultado.getInt("id"));
                     ResultSet resultado2 = sentenca2.executeQuery();
