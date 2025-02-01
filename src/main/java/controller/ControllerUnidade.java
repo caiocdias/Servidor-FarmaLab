@@ -140,7 +140,7 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT id, cep, endereco, cidade, bairro, rua, estado, habilitado, created_at, updated_at FROM unidade WHERE id = ?";
+                String sql = "SELECT * FROM unidade WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, id);
                 ResultSet rs = stmt.executeQuery();
@@ -148,13 +148,13 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                 List<Tributo> tributos = new ArrayList();
                 List<Integer> tributosIds = new ArrayList<>();
                 
-                String sql2 = "SELECT tributo_id FROM unidade_tributo WHERE unidade_id = ?";
+                String sql2 = "SELECT id_tributo FROM unidade_tributo WHERE id_unidade = ?";
                 PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                 sentenca2.setInt(1, id);
                 ResultSet resultado2 = sentenca2.executeQuery();
                 
                 while(resultado2.next()){
-                    tributosIds.add(resultado2.getInt("tributo_id"));
+                    tributosIds.add(resultado2.getInt("id_tributo"));
                 }
                 
                 ControllerTributo controllerTributo = new ControllerTributo();

@@ -112,7 +112,7 @@ public class ControllerPrescricao extends UnicastRemoteObject implements Interfa
             if (conexao != null) {
                 String sql = "SELECT p.id, p.crm, p.created_at, p.updated_at, p.id_cliente, "
                         + "c.nome, c.cpf, c.endereco, c.telefone "
-                        + "FROM prescricao p INNER JOIN pessoa c ON p.id_cliente = c.id WHERE 1=1 AND p.habilitado = 1";
+                        + "FROM prescricao p INNER JOIN pessoa c ON p.id_cliente = c.id WHERE 1=1";
                 if (id != null) {
                     sql += " AND p.id = ?";
                 }

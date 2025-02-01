@@ -70,9 +70,11 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 for(Produto produto : pedido.getProdutos()){
                     if(!pedido.isPronta_entrega()){
                         produto.setPedido_venda(pedido);
-                        if(produto.getId() != 0){
+                        if(produto.getId() == 0){
                             produto.setPedido_producao(pedido);
                             controllerProduto.inserirProduto(produto);
+                        }else{
+                            controllerProduto.atualizarProduto(produto);
                         }
                     }else{
                         produto.setPronta_entrega(true);

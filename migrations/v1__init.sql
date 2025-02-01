@@ -356,3 +356,42 @@ CREATE TABLE IF NOT EXISTS unidade_tributo (
 
 INSERT INTO pessoa (nome, cpf) VALUES ('ADM','123.456.789-10');
 INSERT INTO funcionario (id_pessoa, cargo, password, habilitado) VALUES ((SELECT id FROM pessoa WHERE cpf = '123.456.789-10'),'Administrador','123456',TRUE);
+
+INSERT INTO tipo_produto (nome, instrucoes, habilitado, valor_base) VALUES
+('Cápsula Fitoterápica', 'Tomar 1 cápsula 2 vezes ao dia com água.', TRUE, 25.90),
+('Cremes Dermatológicos', 'Aplicar na pele limpa, 2 vezes ao dia.', TRUE, 45.50),
+('Xarope Fitoterápico', 'Ingerir 10mL a cada 8 horas.', TRUE, 32.00),
+('Suplemento em Pó', 'Dissolver 5g em 200mL de água e consumir 1 vez ao dia.', TRUE, 50.00),
+('Loção Capilar', 'Aplicar no couro cabeludo seco, antes de dormir.', TRUE, 55.75),
+('Colírio Manipulado', 'Instilar 1 gota em cada olho, 2 vezes ao dia.', TRUE, 28.00),
+('Óleo Essencial', 'Diluir 3 gotas em 10mL de óleo vegetal antes de usar na pele.', TRUE, 60.90),
+('Sabonete Glicerinado', 'Usar no banho diário, massageando suavemente.', TRUE, 15.80),
+('Chá Medicinal', 'Infusão de 1 sachê em 200mL de água quente, tomar 2 vezes ao dia.', TRUE, 20.00),
+('Gel Anti-inflamatório', 'Aplicar na área afetada 2 vezes ao dia.', TRUE, 38.90);
+
+INSERT INTO tipo_insumo (nome, quant, habilitado) VALUES
+('Extrato seco de Ginseng', 100.0, TRUE),  -- Cápsula Fitoterápica
+('Óleo de Rosa Mosqueta', 50.0, TRUE),  -- Cremes Dermatológicos
+('Extrato fluido de Guaco', 200.0, TRUE),  -- Xarope Fitoterápico
+('Proteína Hidrolisada', 500.0, TRUE),  -- Suplemento em Pó
+('Minoxidil 5%', 30.0, TRUE),  -- Loção Capilar
+('Hipromelose 0,3%', 10.0, TRUE),  -- Colírio Manipulado
+('Óleo Essencial de Lavanda', 20.0, TRUE),  -- Óleo Essencial
+('Base Glicerinada Vegetal', 1000.0, TRUE),  -- Sabonete Glicerinado
+('Camomila Desidratada', 50.0, TRUE),  -- Chá Medicinal
+('Extrato de Arnica', 100.0, TRUE);  -- Gel Anti-inflamatório
+
+INSERT INTO tipo_insumo_tipo_produto (id_tipo_insumo, id_tipo_produto) VALUES
+(1, 1),  -- Extrato seco de Ginseng → Cápsula Fitoterápica
+(2, 2),  -- Óleo de Rosa Mosqueta → Cremes Dermatológicos
+(3, 3),  -- Extrato fluido de Guaco → Xarope Fitoterápico
+(4, 4),  -- Proteína Hidrolisada → Suplemento em Pó
+(5, 5),  -- Minoxidil 5% → Loção Capilar
+(6, 6),  -- Hipromelose 0,3% → Colírio Manipulado
+(7, 7),  -- Óleo Essencial de Lavanda → Óleo Essencial
+(8, 8),  -- Base Glicerinada Vegetal → Sabonete Glicerinado
+(9, 9),  -- Camomila Desidratada → Chá Medicinal
+(10, 10); -- Extrato de Arnica → Gel Anti-inflamatório
+
+select * from prescricao
+
