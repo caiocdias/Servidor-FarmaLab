@@ -358,16 +358,16 @@ INSERT INTO pessoa (nome, cpf) VALUES ('ADM','123.456.789-10');
 INSERT INTO funcionario (id_pessoa, cargo, password, habilitado) VALUES ((SELECT id FROM pessoa WHERE cpf = '123.456.789-10'),'Administrador','123456',TRUE);
 
 INSERT INTO tipo_produto (nome, instrucoes, habilitado, valor_base) VALUES
-('Cápsula Fitoterápica', 'Tomar 1 cápsula 2 vezes ao dia com água.', TRUE, 25.90),
-('Cremes Dermatológicos', 'Aplicar na pele limpa, 2 vezes ao dia.', TRUE, 45.50),
-('Xarope Fitoterápico', 'Ingerir 10mL a cada 8 horas.', TRUE, 32.00),
-('Suplemento em Pó', 'Dissolver 5g em 200mL de água e consumir 1 vez ao dia.', TRUE, 50.00),
-('Loção Capilar', 'Aplicar no couro cabeludo seco, antes de dormir.', TRUE, 55.75),
-('Colírio Manipulado', 'Instilar 1 gota em cada olho, 2 vezes ao dia.', TRUE, 28.00),
-('Óleo Essencial', 'Diluir 3 gotas em 10mL de óleo vegetal antes de usar na pele.', TRUE, 60.90),
-('Sabonete Glicerinado', 'Usar no banho diário, massageando suavemente.', TRUE, 15.80),
-('Chá Medicinal', 'Infusão de 1 sachê em 200mL de água quente, tomar 2 vezes ao dia.', TRUE, 20.00),
-('Gel Anti-inflamatório', 'Aplicar na área afetada 2 vezes ao dia.', TRUE, 38.90);
+('Cápsula de Melatonina', 'Pesar os ativos, misturar em excipiente adequado e encapsular.', TRUE, 30.00),
+('Creme Hidratante com Ureia', 'Homogeneizar os ingredientes na base cremosa e embalar.', TRUE, 50.00),
+('Xarope de Própolis', 'Dissolver o extrato de própolis em veículo adequado e homogeneizar.', TRUE, 28.00),
+('Suplemento Proteico', 'Misturar as proteínas em pó com estabilizantes e embalar.', TRUE, 65.00),
+('Loção Capilar Antiqueda', 'Dissolver os ativos na base alcoólica e homogeneizar.', TRUE, 45.50),
+('Colírio Lubrificante', 'Diluir o princípio ativo em solução isotônica e esterilizar.', TRUE, 35.00),
+('Óleo Corporal Relaxante', 'Misturar os óleos essenciais na base oleosa e embalar.', TRUE, 55.00),
+('Sabonete Líquido Glicerinado', 'Dissolver os agentes de limpeza na base aquosa e homogeneizar.', TRUE, 20.00),
+('Chá Detox em Sachês', 'Misturar as ervas secas e embalar em sachês individuais.', TRUE, 18.00),
+('Gel Analgésico', 'Misturar os ativos anti-inflamatórios na base gel e homogeneizar.', TRUE, 40.00);
 
 INSERT INTO tipo_insumo (nome, quant, habilitado) VALUES
 ('Extrato seco de Ginseng', 100.0, TRUE),  -- Cápsula Fitoterápica
@@ -393,5 +393,5 @@ INSERT INTO tipo_insumo_tipo_produto (id_tipo_insumo, id_tipo_produto) VALUES
 (9, 9),  -- Camomila Desidratada → Chá Medicinal
 (10, 10); -- Extrato de Arnica → Gel Anti-inflamatório
 
-select * from prescricao
+
 
