@@ -19,5 +19,4 @@ public interface InterfaceOrcamento extends Remote{
     Orcamento obterOrcamento(int id) throws RemoteException;
     void atualizarOrcamento(Orcamento orcamento) throws RemoteException;
     void desativarOrcamento(int id) throws RemoteException;
-    List<Orcamento> buscarOrcamentoPorNome(String nome) throws RemoteException;
 }

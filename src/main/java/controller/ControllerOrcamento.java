@@ -63,7 +63,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT * FROM orcamento WHERE id = ?";
+                String sql = "SELECT * FROM orcamento WHERE id = ? AND habilitado = 1";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, id);
                 ResultSet resultado = sentenca.executeQuery();
@@ -73,18 +73,26 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
                     ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
                     ControllerUnidade controllerUnidade = new ControllerUnidade();
                     
-                    orcamento.setId(resultado.getInt("id"));
-                    orcamento.setDescricao(resultado.getString("descricao"));
-                    orcamento.setObservacoes(resultado.getString("observacoes"));
-                    orcamento.setHabilitado(resultado.getBoolean("habilitado"));
-
-                    String statusString = resultado.getString("status");
-                    orcamento.setStatus(StatusOrcamento.valueOf(statusString));
-
-                    orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
-                    orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
-                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
-
+                    String descricaoSelecionada = resultado.getString("status");
+                    StatusOrcamento statusAtualizado = null;
+                    for (StatusOrcamento status : StatusOrcamento.values()) {
+                        if (status.getDescricao().equals(descricaoSelecionada)) {
+                            statusAtualizado = status;
+                        }
+                    }
+                    
+                    orcamento = new Orcamento(
+                            resultado.getInt("id"),
+                            controllerUnidade.obterUnidade(resultado.getInt("id_unidade")),
+                            controllerCliente.obterCliente(resultado.getInt("id_cliente"), null),
+                            controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null),
+                            statusAtualizado,
+                            resultado.getString("descricao"),
+                            resultado.getString("observacoes"),
+                            resultado.getBoolean("habilitado"),
+                            resultado.getTimestamp("created_at"),
+                            resultado.getTimestamp("updated_at")
+                    );
                      return orcamento;
                 } else {
                     System.out.println("Orçamento com ID " + id + " não encontrado.");
@@ -106,7 +114,7 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
             Conexao.conectar();
             Connection conexao = Conexao.con;
             if (conexao != null) {
-                String sql = "UPDATE orcamento SET id_unidade = ?, id_cliente = ?, id_funcionario = ?, status = ?, descricao = ?, observacoes = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
+                String sql = "UPDATE orcamento SET id_unidade = ?, id_cliente = ?, id_funcionario = ?, status = ?, descricao = ?, observacoes = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, orcamento.getUnidade().getId());
                 sentenca.setInt(2, orcamento.getCliente().getId());
@@ -151,49 +159,5 @@ public class ControllerOrcamento extends UnicastRemoteObject implements Interfac
         }catch(SQLException e){
             throw new RemoteException("Erro ao remover orçamento: " + e.getMessage());
         }
-    }
-
-    @Override
-    public List<Orcamento> buscarOrcamentoPorNome(String nome) throws RemoteException {
-        List<Orcamento> orcamentos = new ArrayList<>();
-        try {
-            Conexao.conectar();
-            Connection conexao = Conexao.con;
-
-            if (conexao != null) {
-                String sql = "SELECT * FROM orcamento WHERE nome LIKE ? AND habilitado = 1";
-                PreparedStatement sentenca = conexao.prepareStatement(sql);
-                sentenca.setString(1, "%" + nome + "%");
-                ResultSet resultado = sentenca.executeQuery();
-                
-                ControllerCliente controllerCliente = new ControllerCliente();
-                ControllerFuncionario controllerFuncionario = new ControllerFuncionario();
-                ControllerUnidade controllerUnidade = new ControllerUnidade();
-                while (resultado.next()) {
-                    Orcamento orcamento = new Orcamento();
-                    
-                    orcamento.setId(resultado.getInt("id"));
-                    orcamento.setDescricao(resultado.getString("descricao"));
-                    orcamento.setObservacoes(resultado.getString("observacoes"));
-                    orcamento.setHabilitado(resultado.getBoolean("habilitado"));
-
-                    String statusString = resultado.getString("status");
-                    orcamento.setStatus(StatusOrcamento.valueOf(statusString));
-
-                    orcamento.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
-                    orcamento.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
-                    orcamento.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
-                    
-                    orcamentos.add(orcamento);
-                }
-            } else {
-                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
-            }
-        } catch (RemoteException | SQLException e) {
-            throw new RemoteException("Erro ao buscar orecamentos por nome: " + e.getMessage());
-        } finally {
-            Conexao.desconectar();
-        }
-        return orcamentos;
     }
 }
