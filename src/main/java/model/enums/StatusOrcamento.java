@@ -12,7 +12,7 @@ public enum StatusOrcamento {
     EM_ANALISE("Em análise"),
     APROVADO("Aprovado. Produto cadastrado!"),
     APROVADO_PARCIALMENTE("Aprovado parcialmente. Leia as observações!"),
-    REJEITADO("Rejeitado.");
+    REJEITADO("Rejeitado");
     
     private final String descricao;
     

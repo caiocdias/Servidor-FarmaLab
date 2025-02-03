@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import model.Insumo;
 import util.Conexao;
@@ -144,40 +145,46 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
 
     @Override
     public int promocaoInsumo(List<Integer> idsTipoInsumos) throws RemoteException {
-        int insumosPromocao = 0;
-        try{
-            Conexao.conectar();
-            Connection conexao = Conexao.con;
-
-            if (conexao != null) {
-                
-                String sql = "SELECT id_tipo_insumo, SUM(quant) AS total_quant FROM insumo WHERE quant > 25 AND DATEDIFF(data_validade, CURRENT_DATE()) < 30 GROUP BY id_tipo_insumo;";
-                PreparedStatement sentenca = conexao.prepareStatement(sql);
-                String insumosIds = new String();
-                
-                for (int i = 0; i < idsTipoInsumos.size(); i++) {
-                    String tributoId = idsTipoInsumos.get(i).toString();
-                    insumosIds += tributoId;
-                    if (i != idsTipoInsumos.size() - 1) {
-                        insumosIds += ",";
-                    } 
-                }
-                sentenca.setString(1, insumosIds);
-                ResultSet rs = sentenca.executeQuery();
-               
-                if (rs.next()) {
-                     insumosPromocao++;
-                } else {
-                    System.out.println("Insumo com estes IDs não encontrados.");
-                }
-            }else{
-                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
-            }
-        }catch (Exception e){
-            
-        } finally {
-            Conexao.desconectar();
-        }
+    int insumosPromocao = 0;
+    
+    if (idsTipoInsumos.isEmpty()) {
         return insumosPromocao;
     }
+
+    try {
+        Conexao.conectar();
+        Connection conexao = Conexao.con;
+
+        if (conexao != null) {
+            // Construção dinâmica do IN (?) com placeholders
+            String placeholders = String.join(",", Collections.nCopies(idsTipoInsumos.size(), "?"));
+            String sql = "SELECT id_tipo_insumo FROM insumo " +
+                         "WHERE quant > 25 AND DATEDIFF(data_validade, CURRENT_DATE()) < 30 " +
+                         "AND id_tipo_insumo IN (" + placeholders + ") " +
+                         "GROUP BY id_tipo_insumo;";
+
+            PreparedStatement sentenca = conexao.prepareStatement(sql);
+
+            // Preenchendo os parâmetros do PreparedStatement
+            for (int i = 0; i < idsTipoInsumos.size(); i++) {
+                sentenca.setInt(i + 1, idsTipoInsumos.get(i));
+            }
+
+            ResultSet rs = sentenca.executeQuery();
+
+            // Contando quantos insumos atendem aos critérios
+            while (rs.next()) {
+                insumosPromocao++;
+            }
+        } else {
+            System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        Conexao.desconectar();
+    }
+
+    return insumosPromocao;
+}
 }

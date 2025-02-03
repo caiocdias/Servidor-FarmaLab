@@ -115,7 +115,7 @@ public class ControllerEstoque extends UnicastRemoteObject implements InterfaceE
             ControllerUnidade controllerUnidade = new ControllerUnidade();
             
             if (conexao != null) {
-                String sql = "SELECT id, nome, endereco, habilitado, created_at, updated_at FROM estoque WHERE id = ?";
+                String sql = "SELECT id, nome, id_unidade, habilitado, created_at, updated_at FROM estoque WHERE id = ?";
                 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, id);

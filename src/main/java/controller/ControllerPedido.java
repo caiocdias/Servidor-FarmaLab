@@ -87,6 +87,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             }
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar o Pedido: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             Conexao.desconectar();
         }
@@ -296,7 +297,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             pedido.setDescontoTotal(calcularDescontoInsumo(pedido) + calcularDescontoMedico(pedido));
             pedido.setTributoTotal(calcularTributo(pedido));
             valorFinal = pedido.getValorTotalBase() * (1 -  pedido.getDescontoTotal() + pedido.getTributoTotal());
-            
+            pedido.setValorFinal(valorFinal);
         } catch (Exception e) {
             System.out.println("Erro ao calcular valor total: " + e.getMessage());
         } 

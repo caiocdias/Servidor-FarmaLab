@@ -30,7 +30,7 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO tipo de produto (id_pedido_venda, id_pedido_producao, id_tipo_produto, id_estoque, data_validade, pronta_entrega, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO produto (id_pedido_venda, id_pedido_producao, id_tipo_produto, id_estoque, data_validade, pronta_entrega, coletado, habilitado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 
