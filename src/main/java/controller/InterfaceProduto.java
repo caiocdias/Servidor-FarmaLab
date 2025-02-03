@@ -19,8 +19,6 @@ import model.Produto;
     
     Produto obterProduto(Integer id) throws RemoteException;
     
-    List<Produto> buscarProdutoPorNome(String nome) throws RemoteException;
-    
     Produto produtoDisponivel (int idTipoProduto) throws RemoteException;
     
 }

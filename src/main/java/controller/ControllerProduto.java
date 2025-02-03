@@ -167,61 +167,14 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
     }
 
     @Override
-    public List<Produto> buscarProdutoPorNome(String nome) throws RemoteException {
-        List<Produto> produtos = new ArrayList<>();
-        try {
-            Conexao.conectar();
-            Connection conexao = Conexao.con;
-
-            if (conexao != null) {
-                String sql = "SELECT * FROM produto WHERE nome LIKE ? AND habilitado = 1";
-                PreparedStatement stmt = conexao.prepareStatement(sql);
-                stmt.setString(1, "%" + nome + "%");
-
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    ControllerPedido controllerPedido = new ControllerPedido();
-                    ControllerEstoque controllerEstoque = new ControllerEstoque();
-                    ControllerTipoProduto controllerTipoProduto = new ControllerTipoProduto();
-                    Produto produto = new Produto();
-
-                    produto.setId(rs.getInt("id"));
-                    produto.setColetado(rs.getBoolean("coletado"));
-                    produto.setPronta_entrega(rs.getBoolean("pronta_entrega"));
-                    produto.setHabilitado(rs.getBoolean("habilitado"));
-                    produto.setData_validade(rs.getTimestamp("data_validade"));
-                    produto.setCreated_at(rs.getTimestamp("created_at"));
-                    produto.setUpdated_at(rs.getTimestamp("updated_at"));
-
-                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("id_pedido_venda")));
-                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("id_pedido_producao")));
-                    produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("id_tipo_produto")));     
-                    produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("id_estoque")));   
-                    
-                    produtos.add(produto);
-                }
-            } else {
-                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RemoteException("Erro ao buscar produto por nome: " + e.getMessage());
-        } finally {
-            Conexao.desconectar();
-        }
-        return produtos;
-    }
-
-    @Override
     public Produto produtoDisponivel(int idTipoProduto) throws RemoteException {
-        Produto produto = new Produto();
+        Produto produto = null;
         try{
             Conexao.conectar();
             Connection conexao = Conexao.con;
             
             if (conexao != null) {
-                String sql = "SELECT * FROM produto WHERE pronta_entrega = 1 AND habilitado = 1 AND tipo_produto_id = ? AND pedido_venda is null LIMIT 1";
+                String sql = "SELECT * FROM produto WHERE pronta_entrega = 1 AND habilitado = 1 AND id_tipo_produto = ? AND id_pedido_venda is null LIMIT 1";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, idTipoProduto);
                 ResultSet rs = stmt.executeQuery();
