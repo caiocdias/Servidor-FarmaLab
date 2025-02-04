@@ -29,13 +29,15 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "INSERT INTO insumo (quant, data_validade, habilitado) VALUES (?, ?, ?)";
+                String sql = "INSERT INTO insumo (id_tipo_insumo, id_estoque, quant, data_validade, habilitado) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
-                stmt.setFloat(1, insumo.getQuant());
-                stmt.setTimestamp(2, insumo.getData_validade());
-                stmt.setBoolean(3, insumo.isHabilitado());
+                stmt.setInt(1, insumo.getTipo_insumo().getId());
+                stmt.setInt(2, insumo.getEstoque().getId());
+                stmt.setFloat(3, insumo.getQuant());
+                stmt.setTimestamp(4, insumo.getData_validade());
+                stmt.setBoolean(5, insumo.isHabilitado());
                 stmt.executeUpdate();
-                System.out.println("Insumo inseridao com sucesso!");
+                System.out.println("Insumo inserido com sucesso!");
             } else {        
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
@@ -54,12 +56,14 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "UPDATE tipo de insumo SET quant = ?, data_validade = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sql = "UPDATE tipo de insumo SET id_tipo_insumo = ?, id_estoque = ?, quant = ?, data_validade = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
-                stmt.setFloat(1, insumo.getQuant());
-                stmt.setTimestamp(2, insumo.getData_validade());
-                stmt.setBoolean(3, insumo.isHabilitado());
-                stmt.setInt(4, insumo.getId());
+                stmt.setInt(1, insumo.getTipo_insumo().getId());
+                stmt.setInt(2, insumo.getEstoque().getId());
+                stmt.setFloat(3, insumo.getQuant());
+                stmt.setTimestamp(4, insumo.getData_validade());
+                stmt.setBoolean(5, insumo.isHabilitado());
+                stmt.setInt(6, insumo.getId());
 
                 int linhasAfetadas = stmt.executeUpdate();
 
@@ -121,12 +125,18 @@ public class ControllerInsumo extends UnicastRemoteObject implements InterfaceIn
                 sentenca.setInt(1, id);
                 ResultSet rs = sentenca.executeQuery();
                 
-
+                
                 if (rs.next()) {
+                    ControllerEstoque controllerEstoque = new ControllerEstoque();
+                    ControllerTipoInsumo controllerTipoInsumo = new ControllerTipoInsumo();
+                    
+                    insumo = new Insumo();
                     insumo.setId(rs.getInt("id"));
                     insumo.setQuant(rs.getFloat("quant"));
                     insumo.setData_validade(rs.getTimestamp("data_validade"));
                     insumo.setHabilitado(rs.getBoolean("habilitado"));
+                    insumo.setEstoque(controllerEstoque.obterEstoque(rs.getInt("id_estoque")));
+                    insumo.setTipo_insumo(controllerTipoInsumo.obterTipoInsumo(rs.getInt("id_tipo_insumo")));
                     
                     return insumo;
                 } else {

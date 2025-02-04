@@ -61,10 +61,14 @@ public class ControllerNotaFiscal extends UnicastRemoteObject implements Interfa
                 ResultSet resultado = sentenca.executeQuery();
 
                 if (resultado.next()) {
-                    nf.setId(resultado.getInt("id"));
-                    nf.setNum_nota(resultado.getInt("num_nota"));
-                    nf.setData_emissao(resultado.getTimestamp("data_emissao"));
-                    nf.setHabilitado(resultado.getBoolean("habilitado"));
+                    nf = new NotaFiscal(
+                            resultado.getInt("id"),
+                            resultado.getInt("num_nota"),
+                            resultado.getTimestamp("data_emissao"),
+                            resultado.getBoolean("habilitado"),
+                            resultado.getTimestamp("created_at"),
+                            resultado.getTimestamp("updated_at")
+                    );
 
                     return nf;
                 } else {

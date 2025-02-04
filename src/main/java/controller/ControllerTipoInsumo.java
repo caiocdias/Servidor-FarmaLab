@@ -125,7 +125,8 @@ public class ControllerTipoInsumo extends UnicastRemoteObject implements Interfa
                 ResultSet resultado = sentenca.executeQuery();
 
                 if (resultado.next()) {
-
+                    
+                    tipoInsumo = new TipoInsumo();
                     tipoInsumo.setId(resultado.getInt("id"));
                     tipoInsumo.setNome(resultado.getString("nome"));
                     tipoInsumo.setQuant(resultado.getFloat("quantidade"));

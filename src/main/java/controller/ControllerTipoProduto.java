@@ -159,6 +159,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                 tipoInsumos = controllerTipoInsumo.obterTipoInsumo(tipoInsumosIds);
                 
                 if (resultado.next()) {
+                    tipoProduto = new TipoProduto();
                     tipoProduto.setId(resultado.getInt("id"));
                     tipoProduto.setNome(resultado.getString("nome"));
                     tipoProduto.setInstrucoes(resultado.getString("instrucoes"));

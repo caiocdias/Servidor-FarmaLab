@@ -112,6 +112,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     ControllerPrescricao controllerPrescricao = new ControllerPrescricao();
                     ControllerUnidade controllerUnidade = new ControllerUnidade();
                     
+                    pedido = new Pedido();
                     pedido.setId(resultado.getInt("id"));
                     pedido.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
                     pedido.setHabilitado(resultado.getBoolean("habilitado"));

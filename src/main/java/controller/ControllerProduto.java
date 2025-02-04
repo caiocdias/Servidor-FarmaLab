@@ -141,6 +141,9 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     ControllerPedido controllerPedido = new ControllerPedido();
                     ControllerTipoProduto controllerTipoProduto = new ControllerTipoProduto();
                     ControllerEstoque controllerEstoque = new ControllerEstoque();
+                    
+                    produto = new Produto();
+                    produto.setId(resultado.getInt("id"));
                     produto.setData_validade(resultado.getTimestamp("data_validade"));
                     produto.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
                     produto.setColetado(resultado.getBoolean("coletado"));
