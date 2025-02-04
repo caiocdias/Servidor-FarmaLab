@@ -149,7 +149,7 @@ public class ControllerTributo extends UnicastRemoteObject implements InterfaceT
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT id, estado, nome_imposto, porcentagem, habilitado, created_at, updated_at FROM tributo WHERE nome LIKE ?";
+                String sql = "SELECT id, estado, nome_imposto, porcentagem, habilitado, created_at, updated_at FROM tributo WHERE nome_imposto LIKE ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
 

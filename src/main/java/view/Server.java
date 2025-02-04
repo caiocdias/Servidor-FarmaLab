@@ -16,6 +16,7 @@ import controller.ControllerTipoInsumo;
 import controller.ControllerTipoProduto;
 import controller.ControllerTributo;
 import controller.ControllerUnidade;
+import controller.ControllerUnidadeTributo;
 import controller.ControllerVenda;
 import controller.InterfaceCliente;
 import controller.InterfaceEstoque;
@@ -31,6 +32,7 @@ import controller.InterfaceTipoInsumo;
 import controller.InterfaceTipoProduto;
 import controller.InterfaceTributo;
 import controller.InterfaceUnidade;
+import controller.InterfaceUnidadeTributo;
 import controller.InterfaceVenda;
 
 public class Server {
@@ -94,6 +96,10 @@ public class Server {
             InterfaceUnidade UnidadeStub = new ControllerUnidade();
             Naming.rebind("//localhost/Unidade", UnidadeStub);
             System.out.println("Serviço de Unidade registrado com sucesso!");
+            
+            InterfaceUnidadeTributo unidadeTributoStub = new ControllerUnidadeTributo();
+            Naming.rebind("//localhost/UnidadeTributo", unidadeTributoStub);
+            System.out.println("Serviço de UnidadeTributo registrado com sucesso!");
             
             InterfaceVenda VendaStub = new ControllerVenda();
             Naming.rebind("//localhost/Venda", VendaStub);
