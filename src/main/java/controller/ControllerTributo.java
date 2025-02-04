@@ -216,7 +216,7 @@ public class ControllerTributo extends UnicastRemoteObject implements InterfaceT
                 System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao obter o tipo de insumo: " + e.getMessage());
+            System.out.println("Erro ao obter o tributo: " + e.getMessage());
         } finally {
             Conexao.desconectar();
         }

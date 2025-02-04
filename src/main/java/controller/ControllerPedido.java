@@ -121,9 +121,14 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     pedido.setValorFinal(resultado.getFloat("valor_final"));
                     pedido.setTributoTotal(resultado.getFloat("tributo_total"));
                     
-                    String statusString = resultado.getString("status");
-                    pedido.setStatus(StatusPedido.valueOf(statusString));
-
+                    String descricaoSelecionada = resultado.getString("status");
+                    StatusPedido statusAtualizado = null;
+                    for (StatusPedido status : StatusPedido.values()) {
+                        if (status.getDescricao().equals(descricaoSelecionada)) {
+                            statusAtualizado = status;
+                        }
+                    }
+                    pedido.setStatus(statusAtualizado);
                     pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
                     pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("id_prescricao"), null));
