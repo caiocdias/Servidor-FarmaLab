@@ -200,11 +200,11 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setString(1, "%" + nome + "%");
                 ResultSet rs = stmt.executeQuery();
-                List<Integer> tributosIds = new ArrayList(); 
+                List<Integer> unidadeIds = new ArrayList(); 
                 while (rs.next()){
-                    tributosIds.add(rs.getInt("id"));
+                    unidadeIds.add(rs.getInt("id"));
                 }
-                unidades = obterUnidade(tributosIds);
+                unidades = obterUnidade(unidadeIds);
             } 
         } catch (Exception e) {
             e.printStackTrace();
@@ -223,17 +223,19 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT * FROM unidade WHERE id = ?";
+                String sql = "SELECT * FROM unidade WHERE id IN (?)";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
-                String tributosIds = new String();
+                String unidadeIds = new String();
                 for (int i = 0; i < ids.size(); i++) {
                     String tributoId = ids.get(i).toString();
-                    tributosIds += tributoId;
+                    unidadeIds += tributoId;
                     if (i != ids.size() - 1) {
-                        tributosIds += ",";
+                        unidadeIds += ",";
                     } 
                 }
-                sentenca.setString(1, tributosIds);
+                System.out.println(unidadeIds);
+                sentenca.setString(1, unidadeIds);
+                   
                 ResultSet resultado = sentenca.executeQuery();
                 
                 while (resultado.next()) {
@@ -246,7 +248,7 @@ public class ControllerUnidade extends UnicastRemoteObject implements InterfaceU
                     ResultSet resultado2 = sentenca2.executeQuery();
                     
                     while(resultado2.next()){
-                        listTributosIds.add(resultado2.getInt("tributo_id"));
+                        listTributosIds.add(resultado2.getInt("id_tributo"));
                     }
 
                     ControllerTributo controllerTributo = new ControllerTributo();

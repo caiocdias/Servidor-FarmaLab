@@ -34,8 +34,8 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 
-                stmt.setInt(1, produto.getPedido_venda().getId());
-                stmt.setInt(2, produto.getPedido_producao().getId());
+                stmt.setInt(1, produto.getPedido_venda());
+                stmt.setInt(2, produto.getPedido_producao());
                 stmt.setInt(3, produto.getTipo_produto().getId());
                 stmt.setInt(4, produto.getEstoque().getId());
                 stmt.setTimestamp(5, produto.getData_validade());
@@ -67,8 +67,8 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                 String sql = "UPDATE tipo de produto SET id_pedido_venda = ?, id_pedido_producao = ?, id_tipo_produto = ?, id_estoque = ?, data_validade = ?, pronta_entrega = ?, habilitado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmt = conexao.prepareStatement(sql);
 
-                stmt.setInt(1, produto.getPedido_venda().getId());
-                stmt.setInt(2, produto.getPedido_producao().getId());
+                stmt.setInt(1, produto.getPedido_venda());
+                stmt.setInt(2, produto.getPedido_producao());
                 stmt.setInt(3, produto.getTipo_produto().getId());
                 stmt.setInt(4, produto.getEstoque().getId());
                 stmt.setTimestamp(5, produto.getData_validade());
@@ -138,7 +138,6 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                 ResultSet resultado = sentenca.executeQuery();
 
                 if (resultado.next()) {
-                    ControllerPedido controllerPedido = new ControllerPedido();
                     ControllerTipoProduto controllerTipoProduto = new ControllerTipoProduto();
                     ControllerEstoque controllerEstoque = new ControllerEstoque();
                     
@@ -149,8 +148,8 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     produto.setColetado(resultado.getBoolean("coletado"));
                     produto.setHabilitado(resultado.getBoolean("habilitado"));
                     
-                    produto.setPedido_venda(controllerPedido.obterPedido(resultado.getInt("id_pedido_venda")));
-                    produto.setPedido_producao(controllerPedido.obterPedido(resultado.getInt("id_pedido_producao")));
+                    produto.setPedido_venda(resultado.getInt("id_pedido_venda"));
+                    produto.setPedido_producao(resultado.getInt("id_pedido_producao"));
                     produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(resultado.getInt("id_tipo_produto")));
                     produto.setEstoque(controllerEstoque.obterEstoque(resultado.getInt("id_estoque")));
                     
@@ -191,8 +190,8 @@ public class ControllerProduto extends UnicastRemoteObject implements InterfaceP
                     produto.setColetado(rs.getBoolean("coletado"));
                     produto.setHabilitado(rs.getBoolean("habilitado"));
                     
-                    produto.setPedido_venda(controllerPedido.obterPedido(rs.getInt("id_pedido_venda")));
-                    produto.setPedido_producao(controllerPedido.obterPedido(rs.getInt("id_pedido_producao")));
+                    produto.setPedido_venda(rs.getInt("id_pedido_venda"));
+                    produto.setPedido_producao(rs.getInt("id_pedido_producao"));
                     produto.setTipo_produto(controllerTipoProduto.obterTipoProduto(rs.getInt("id_tipo_produto")));
                     produto.setEstoque(controllerEstoque.obterEstoque(rs.getInt("id_estoque")));
                 } else {

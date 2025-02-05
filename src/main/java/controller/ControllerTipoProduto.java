@@ -146,7 +146,7 @@ public class ControllerTipoProduto extends UnicastRemoteObject implements Interf
                 List<TipoInsumo> tipoInsumos = new ArrayList<>();
                 List<Integer> tipoInsumosIds = new ArrayList<>();
             
-                String sql2 = "SELECT id_tipo_insumo FROM tipo_insumo_produto WHERE id_tipo_produto = ?";
+                String sql2 = "SELECT id_tipo_insumo FROM tipo_insumo_tipo_produto WHERE id_tipo_produto = ?";
                 PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
                 sentenca2.setInt(1, id);
                 ResultSet resultado2 = sentenca2.executeQuery();

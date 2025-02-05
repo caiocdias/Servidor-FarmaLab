@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import model.MedicoParceiro;
@@ -69,9 +70,9 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 ControllerProduto controllerProduto = new ControllerProduto();
                 for(Produto produto : pedido.getProdutos()){
                     if(!pedido.isPronta_entrega()){
-                        produto.setPedido_venda(pedido);
+                        produto.setPedido_venda(pedido.getId());
                         if(produto.getId() == 0){
-                            produto.setPedido_producao(pedido);
+                            produto.setPedido_producao(pedido.getId());
                             controllerProduto.inserirProduto(produto);
                         }else{
                             controllerProduto.atualizarProduto(produto);
@@ -105,6 +106,32 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, id);
                 ResultSet resultado = sentenca.executeQuery();
+                
+                List<Produto> produtos = new ArrayList();
+                
+                String sql2 = "SELECT * FROM produto WHERE id_pedido_venda = ?";
+                PreparedStatement sentenca2 = conexao.prepareStatement(sql2);
+                sentenca2.setInt(1, id);
+                ResultSet resultado2 = sentenca2.executeQuery();
+                ControllerTipoProduto controllerTipoProduto = new ControllerTipoProduto();
+                ControllerEstoque controllerEstoque = new ControllerEstoque();
+                
+                while(resultado2.next()){
+                    Produto produto = new Produto(
+                            resultado2.getInt("id"),
+                            resultado2.getInt("id_pedido_venda"),
+                            resultado2.getInt("id_pedido_producao"),
+                            controllerTipoProduto.obterTipoProduto(resultado2.getInt("id_tipo_produto")),
+                            resultado2.getBoolean("pronta_entrega"),
+                            resultado2.getBoolean("coletado"),
+                            controllerEstoque.obterEstoque(resultado2.getInt("id_estoque")),
+                            resultado2.getTimestamp("data_validade"),
+                            resultado2.getBoolean("habilitado"),
+                            resultado2.getTimestamp("created_at"),
+                            resultado2.getTimestamp("updated_at")
+                    );
+                    produtos.add(produto);
+                }
 
                 if (resultado.next()) {
                     ControllerCliente controllerCliente = new ControllerCliente();
@@ -133,7 +160,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                     pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
                     pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("id_prescricao"), null));
                     pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
-
+                    pedido.setProdutos(produtos);
                      return pedido;
                 } else {
                     System.out.println("Pedido com ID " + id + " não encontrado.");
@@ -155,7 +182,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
             Conexao.conectar();
             Connection conexao = Conexao.con;
             if (conexao != null) {
-                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, id_prescricao = ?,id_unidade = ?, status = ?, habilitado = ?, pronta_entrega = ?, valor_total_base = ?, valor_final = ?, tributo_total = ?, updated_at = CURRENT_TIMESTAMP, WHERE id = ?";
+                String sql = "UPDATE pedido SET id_cliente = ?, id_funcionario = ?, id_prescricao = ?,id_unidade = ?, status = ?, habilitado = ?, pronta_entrega = ?, valor_total_base = ?, valor_final = ?, tributo_total = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 sentenca.setInt(1, pedido.getCliente().getId());
                 sentenca.setInt(2, pedido.getFuncionario().getId());
@@ -378,21 +405,7 @@ public class ControllerPedido extends UnicastRemoteObject implements InterfacePe
                 
                 while (resultado.next()) {
                     Pedido pedido = new Pedido();
-
-                    pedido.setId(resultado.getInt("id"));
-                    pedido.setPronta_entrega(resultado.getBoolean("pronta_entrega"));
-                    pedido.setHabilitado(resultado.getBoolean("habilitado"));
-                    pedido.setStatus(StatusPedido.valueOf(resultado.getString("status")));
-                    pedido.setDescontoTotal(resultado.getFloat("desconto_total"));
-                    pedido.setValorTotalBase(resultado.getFloat("valor_total_base"));
-                    pedido.setValorFinal(resultado.getFloat("valor_final"));
-                    pedido.setTributoTotal(resultado.getFloat("tributo_total"));
-
-                    pedido.setCliente(controllerCliente.obterCliente(resultado.getInt("id_cliente"), null));
-                    pedido.setFuncionario(controllerFuncionario.obterFuncionario(resultado.getInt("id_funcionario"), null));
-                    pedido.setPrescricao(controllerPrescricao.obterPrescricao(resultado.getInt("id_prescricao"), null));
-                    pedido.setUnidade(controllerUnidade.obterUnidade(resultado.getInt("id_unidade")));
-                    
+                    pedido = obterPedido(resultado.getInt("id"));
                     pedidos.add(pedido);
                 }
             } else {

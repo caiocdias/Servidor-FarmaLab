@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import model.Produto;
 import model.Venda;
@@ -27,31 +29,42 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
     }
     
     @Override
-    public void inserirVenda(Venda venda) throws RemoteException {
+    public Venda inserirVenda(Venda venda) throws RemoteException {
+        int id = 0;
         try{
-                Conexao.conectar();
-                Connection conexao = Conexao.con;
+            Conexao.conectar();
+            Connection conexao = Conexao.con;
 
-                if (conexao != null) {
-                    String sqlVenda = "INSERT INTO venda (id_unidade, id_pedido, id_nota_fiscal) VALUES (?, ?, ?)";
-                    PreparedStatement stmtVenda = conexao.prepareStatement(sqlVenda, Statement.RETURN_GENERATED_KEYS);
-                    stmtVenda.setInt(1, venda.getUnidade().getId());
-                    stmtVenda.setInt(2, venda.getPedido().getId());
-                    stmtVenda.setInt(3, venda.getNota_fiscal().getId());
-                    stmtVenda.executeUpdate();
-                    venda.getPedido().setStatus(StatusPedido.PRONTO_PARA_PRODUCAO);
-                    ControllerPedido controllerPedido = new ControllerPedido();
-                    controllerPedido.atualizarPedido(venda.getPedido());
-                    System.out.println("Venda inserida com sucesso!");
-                } else {
-                    System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
+            if (conexao != null) {
+                String sqlVenda = "INSERT INTO venda (id_unidade, id_pedido) VALUES (?, ?)";
+                venda.getPedido().setStatus(StatusPedido.PRONTO_PARA_PRODUCAO);
+                PreparedStatement stmtVenda = conexao.prepareStatement(sqlVenda, Statement.RETURN_GENERATED_KEYS);
+                stmtVenda.setInt(1, venda.getUnidade().getId());
+                stmtVenda.setInt(2, venda.getPedido().getId());
+                stmtVenda.executeUpdate();
+                
+                ControllerPedido controllerPedido = new ControllerPedido();
+                controllerPedido.atualizarPedido(venda.getPedido());
+                
+                ResultSet rs = stmtVenda.getGeneratedKeys();
+                if (rs.next()) {
+                    venda.setId(rs.getInt(1));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RemoteException("Erro ao inserir a venda: " + e.getMessage());
-            } finally {
-                Conexao.desconectar();
+                Timestamp timestamp = Timestamp.from(Instant.now());
+                venda.setCreated_at(timestamp);
+                
+                System.out.println("Venda inserida com sucesso!");
+                
+            } else {
+                System.out.println("Erro: conexão com o banco de dados não foi estabelecida.");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RemoteException("Erro ao inserir a venda: " + e.getMessage());
+        } finally {
+            Conexao.desconectar();
+        }
+        return venda;
     }
 
     @Override
@@ -61,11 +74,10 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sqlVenda = "UPDATE venda SET id_unidade = ?, id_pedido = ?, id_nota_fiscal = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+                String sqlVenda = "UPDATE venda SET id_unidade = ?, id_pedido = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
                 PreparedStatement stmtVenda = conexao.prepareStatement(sqlVenda, Statement.RETURN_GENERATED_KEYS);
                     stmtVenda.setInt(1, venda.getUnidade().getId());
                     stmtVenda.setInt(2, venda.getPedido().getId());
-                    stmtVenda.setInt(3, venda.getNota_fiscal().getId());
                     stmtVenda.setInt(4, venda.getId());
                     stmtVenda.executeUpdate();
 
@@ -116,11 +128,10 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
             Conexao.conectar();
             Connection conexao = Conexao.con;
             ControllerUnidade controllerUnidade = new ControllerUnidade();
-            ControllerNotaFiscal controllerNotaFiscal = new ControllerNotaFiscal();
             ControllerPedido controllerPedido = new ControllerPedido(); 
 
             if (conexao != null) {
-                String sql = "SELECT id, id_unidade, id_nota_fiscal, id_pedido, habilitado, created_at, updated_at FROM venda WHERE id = ?";
+                String sql = "SELECT id, id_unidade, id_pedido, habilitado, created_at, updated_at FROM venda WHERE id = ?";
                 
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 stmt.setInt(1, id);
@@ -130,7 +141,6 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
                     venda = new Venda(
                             rs.getInt("id"),
                             controllerUnidade.obterUnidade(rs.getInt("id_unidade")),
-                            controllerNotaFiscal.obterNotaFiscal(rs.getInt("id_nota_fiscal")),
                             controllerPedido.obterPedido(rs.getInt("id_pedido")),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),
@@ -156,7 +166,6 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
             Conexao.conectar();
             Connection conexao = Conexao.con;
             ControllerUnidade controllerUnidade = new ControllerUnidade();
-            ControllerNotaFiscal controllerNotaFiscal = new ControllerNotaFiscal();
             ControllerPedido controllerPedido = new ControllerPedido(); 
 
             if (conexao != null) {
@@ -185,7 +194,6 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
                     Venda venda = new Venda(
                             rs.getInt("id"),
                             controllerUnidade.obterUnidade(rs.getInt("id_unidade")),
-                            controllerNotaFiscal.obterNotaFiscal(rs.getInt("id_nota_fiscal")),
                             controllerPedido.obterPedido(rs.getInt("id_pedido")),
                             rs.getBoolean("habilitado"),
                             rs.getTimestamp("created_at"),
@@ -214,8 +222,8 @@ public class ControllerVenda extends UnicastRemoteObject implements InterfaceVen
         }
         
         String nf = "NOTA FISCAL\n\n"
-                + "Nº: "+venda.getNota_fiscal().getNum_nota()+"\n"
-                + "Data de Emissão: "+venda.getNota_fiscal().getData_emissao()+"\n\n"
+                + "Nº: "+venda.getId()+"\n"
+                + "Data de Emissão: "+venda.getCreated_at()+ "\n\n"
                 + "DADOS DO CLIENTE:\n"
                 + "Nome: "+venda.getPedido().getCliente().getNome()+"\n"
                 + "CPF:"+venda.getPedido().getCliente().getCpf()+"\n\n"

@@ -7,7 +7,6 @@ import controller.ControllerEstoque;
 import controller.ControllerFuncionario;
 import controller.ControllerInsumo;
 import controller.ControllerMedicoParceiro;
-import controller.ControllerNotaFiscal;
 import controller.ControllerOrcamento;
 import controller.ControllerPedido;
 import controller.ControllerPrescricao;
@@ -23,7 +22,6 @@ import controller.InterfaceEstoque;
 import controller.InterfaceFuncionario;
 import controller.InterfaceInsumo;
 import controller.InterfaceMedicoParceiro;
-import controller.InterfaceNotaFiscal;
 import controller.InterfaceOrcamento;
 import controller.InterfacePedido;
 import controller.InterfacePrescricao;
@@ -60,10 +58,6 @@ public class Server {
             InterfaceMedicoParceiro medicoParceiroStub = new ControllerMedicoParceiro();
             Naming.rebind("//localhost/MedicoParceiro", medicoParceiroStub);
             System.out.println("Serviço de MedicoParceiro registrado com sucesso!");
-            
-            InterfaceNotaFiscal notaFiscalStub = new ControllerNotaFiscal();
-            Naming.rebind("//localhost/NotaFiscal", notaFiscalStub);
-            System.out.println("Serviço de Nota Fiscal registrado com sucesso!");
             
             InterfaceOrcamento orcamentoStub = new ControllerOrcamento();
             Naming.rebind("//localhost/Orcamento", orcamentoStub);

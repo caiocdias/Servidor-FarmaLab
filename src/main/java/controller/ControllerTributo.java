@@ -187,7 +187,7 @@ public class ControllerTributo extends UnicastRemoteObject implements InterfaceT
             Connection conexao = Conexao.con;
 
             if (conexao != null) {
-                String sql = "SELECT * FROM tributo WHERE id = ?";
+                String sql = "SELECT * FROM tributo WHERE id IN (?)";
                 PreparedStatement sentenca = conexao.prepareStatement(sql);
                 String tributosIds = new String();
                 for (int i = 0; i < ids.size(); i++) {

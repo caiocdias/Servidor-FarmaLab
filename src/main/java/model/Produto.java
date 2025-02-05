@@ -13,8 +13,8 @@ import java.sql.Timestamp;
  */
 public class Produto implements Serializable{
     private int id;
-    private Pedido pedido_producao;
-    private Pedido pedido_venda;
+    private int pedido_producao;
+    private int pedido_venda;
     private TipoProduto tipo_produto;
     private boolean pronta_entrega;
     private boolean coletado;
@@ -28,7 +28,7 @@ public class Produto implements Serializable{
         
     };
 
-    public Produto(int id, Pedido pedido_venda, Pedido pedido_producao, TipoProduto tipo_produto, boolean pronta_entrega, boolean coletado, Estoque estoque, Timestamp data_validade, boolean habilitado, Timestamp created_at, Timestamp updated_at){
+    public Produto(int id, int pedido_venda, int pedido_producao, TipoProduto tipo_produto, boolean pronta_entrega, boolean coletado, Estoque estoque, Timestamp data_validade, boolean habilitado, Timestamp created_at, Timestamp updated_at){
         setId(id);
         setPedido_venda(pedido_venda);
         setPedido_producao(pedido_producao);
@@ -114,19 +114,20 @@ public class Produto implements Serializable{
         this.coletado = coletado;
     }
 
-    public Pedido getPedido_producao() {
+    public int getPedido_producao() {
         return pedido_producao;
     }
 
-    public void setPedido_producao(Pedido pedido_producao) {
+    public void setPedido_producao(int pedido_producao) {
         this.pedido_producao = pedido_producao;
     }
 
-    public Pedido getPedido_venda() {
+    public int getPedido_venda() {
         return pedido_venda;
     }
 
-    public void setPedido_venda(Pedido pedido_venda) {
+    public void setPedido_venda(int pedido_venda) {
         this.pedido_venda = pedido_venda;
     }
+    
 }

@@ -167,15 +167,6 @@ CREATE TABLE IF NOT EXISTS tributo (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS nota_fiscal (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    num_nota INT NOT NULL,
-    data_emissao TIMESTAMP,
-    habilitado BOOLEAN,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS prescricao (
     id INT AUTO_INCREMENT PRIMARY KEY,
     crm VARCHAR(13),
@@ -248,13 +239,6 @@ CREATE TABLE IF NOT EXISTS venda (
     CONSTRAINT fk_venda_pedido
         FOREIGN KEY (id_pedido)
         REFERENCES pedido(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-
-    id_nota_fiscal INT NOT NULL,
-    CONSTRAINT fk_venda_nota_fiscal
-        FOREIGN KEY (id_nota_fiscal)
-        REFERENCES nota_fiscal(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -354,8 +338,8 @@ CREATE TABLE IF NOT EXISTS unidade_tributo (
         ON UPDATE CASCADE
 );
 
-INSERT INTO pessoa (nome, cpf) VALUES ('ADM','123.456.789-10');
-INSERT INTO funcionario (id_pessoa, cargo, password, habilitado) VALUES ((SELECT id FROM pessoa WHERE cpf = '123.456.789-10'),'Administrador','123456',TRUE);
+INSERT INTO pessoa (nome, cpf) VALUES ('Administrador','123.456.789-10');
+INSERT INTO funcionario (id_pessoa, cargo, password, habilitado) VALUES ((SELECT id FROM pessoa WHERE cpf = '123.456.789-10'),'adm','123456',TRUE);
 
 INSERT INTO tipo_produto (nome, instrucoes, habilitado, valor_base) VALUES
 ('Cápsula de Melatonina', 'Pesar os ativos, misturar em excipiente adequado e encapsular.', TRUE, 30.00),
@@ -393,5 +377,7 @@ INSERT INTO tipo_insumo_tipo_produto (id_tipo_insumo, id_tipo_produto) VALUES
 (9, 9),  -- Camomila Desidratada → Chá Medicinal
 (10, 10); -- Extrato de Arnica → Gel Anti-inflamatório
 
-
+use farmalab;
+select * from pedido;
+select * from pedido join produto on pedido.id = produto.id_pedido_venda;
 

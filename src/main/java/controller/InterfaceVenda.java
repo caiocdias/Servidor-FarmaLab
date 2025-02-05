@@ -14,7 +14,7 @@ import model.Venda;
  * @author Rafae
  */
 public interface InterfaceVenda extends Remote{
-    void inserirVenda(Venda venda) throws RemoteException;
+    Venda inserirVenda(Venda venda) throws RemoteException;
 
     void atualizarVenda(Venda venda) throws RemoteException;
 
