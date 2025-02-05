@@ -377,7 +377,3 @@ INSERT INTO tipo_insumo_tipo_produto (id_tipo_insumo, id_tipo_produto) VALUES
 (9, 9),  -- Camomila Desidratada → Chá Medicinal
 (10, 10); -- Extrato de Arnica → Gel Anti-inflamatório
 
-use farmalab;
-select * from pedido;
-select * from pedido join produto on pedido.id = produto.id_pedido_venda;
-
