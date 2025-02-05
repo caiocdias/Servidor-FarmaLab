@@ -32,11 +32,15 @@ import controller.InterfaceTributo;
 import controller.InterfaceUnidade;
 import controller.InterfaceUnidadeTributo;
 import controller.InterfaceVenda;
+import java.rmi.server.RMISocketFactory;
+import model.TimeoutSocketFactory;
 
 public class Server {
 
     public static void main(String[] args) {
         try {
+            RMISocketFactory.setSocketFactory(new TimeoutSocketFactory(5000)); 
+            
             LocateRegistry.createRegistry(1099);
 
             InterfaceCliente clienteStub = new ControllerCliente();
